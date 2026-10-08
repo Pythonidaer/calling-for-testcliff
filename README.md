@@ -7,6 +7,6 @@ Six incorrect letters draw the head, body, two arms, and two legs. Three consecu
 `npm start` then open http://localhost:8000. Run `npm test` for game-rule tests. No dependencies, build step, or third-party assets.
 
 ## GitHub Pages
-Publish the `main` branch, `/ (root)`, in Settings → Pages. All asset links are relative for repository-path hosting.
+The included workflow runs unit tests and Chromium gameplay checks at 320, 390, 768, and 1280px, then deploys the static files. If automatic Pages activation is denied, choose **GitHub Actions** as the source in Settings → Pages and re-run the workflow. All asset links are relative for repository-path hosting.
 
 Player names are used for trivia; this project is not affiliated with the NHL or its teams. No player images or league logos are used.

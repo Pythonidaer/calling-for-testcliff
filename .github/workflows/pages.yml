@@ -18,13 +18,14 @@ jobs:
           node-version: '22'
       - run: npm test
       - run: npm install --no-save playwright
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - name: Check browser gameplay and responsive layout
         run: |
           python3 -m http.server 8000 &
           node qa/browser.cjs
+          node qa/loading.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: mobile-preview
-          path: mobile-preview.png
+          path: "*-preview.png"

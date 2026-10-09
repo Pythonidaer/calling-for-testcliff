@@ -7,22 +7,23 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Ice Time — Hockey Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=menu-scoreboard-1">
-  <script type="module" src="bootstrap.js?v=menu-scoreboard-1"></script>
+  <link rel="stylesheet" href="styles.css?v=round-refinement-1">
+  <script type="module" src="bootstrap.js?v=round-refinement-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
   <header>
     <button id="back" class="icon-button" aria-label="Change game options" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
-    <div class="brand"><svg class="logo" viewBox="0 0 48 40" aria-hidden="true"><path d="M5 14v12c0 6 38 6 38 0V14" fill="currentColor"/><ellipse cx="24" cy="14" rx="19" ry="8" fill="currentColor"/><path d="M9 17c8 5 22 5 30 0M10 26c7 3 21 3 28 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span>ICE TIME<small>HOCKEY HANGMAN</small></span></div>
+    <div class="brand"><svg class="logo" viewBox="0 0 48 40" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span>ICE TIME<small>HOCKEY HANGMAN</small></span></div>
     <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   </header>
   <section id="start-screen" class="screen start-screen" aria-labelledby="start-title">
     <div class="intro"><h1 id="start-title" tabindex="-1">Know your hockey?</h1><p>Choose a decade and team, then guess the player.</p></div>
-    <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">YOUR RECORD</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
-    <div class="filters"><div class="filter"><label for="decade">DECADE</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL TEAM</label><select id="team" disabled><option>All teams</option></select></div></div>
+    <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">Record</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
+    <button id="play" class="play-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg><span>Play</span></button>
+    <div class="filters"><div class="filter"><label for="decade">Decade</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL team</label><select id="team" disabled><option>All teams</option></select></div></div>
     <p id="roster-count" class="pool-count"></p>
-    <button id="play" class="primary" disabled>Play <span aria-hidden="true">→</span></button>
+
     <p id="load-status" role="status">Loading NHL records…</p>
   </section>
   <section id="game-screen" class="screen game-screen" aria-label="Hockey hangman game" hidden>
@@ -34,22 +35,21 @@
     <button id="skip" class="text-button">Give up &amp; reveal</button>
   </section>
   <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
-    <div class="result-intro"><span class="eyebrow" id="result-label">THE FINAL WHISTLE</span><h1 id="result-title" tabindex="-1">Round complete</h1><p id="result-name" class="result-name"></p><p id="result-message"></p></div>
-    <section id="reveal" class="reveal" aria-labelledby="reveal-title"><h2 id="reveal-title">THE PLAYER CARD</h2><p id="reveal-context"></p><dl id="reveal-details"></dl></section>
-    <p id="result-stats" class="result-stats"></p>
-    <div class="result-actions"><button id="next" class="primary">Play again <span aria-hidden="true">→</span></button><button id="change-options" class="secondary">Change options</button></div>
+    <div class="result-intro"><h1 id="result-title" tabindex="-1">Round complete</h1></div>
+    <section id="reveal" class="reveal" aria-labelledby="reveal-title"><h2 id="reveal-title">Player</h2><p id="result-name" class="result-name"></p><p id="reveal-context"></p><dl id="reveal-details"></dl></section>
+    <div class="result-actions"><button id="next" class="play-button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg><span>Play again</span></button></div>
   </section>
   <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
     <h1 id="menu-title" tabindex="-1">Menu</h1>
-    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <span aria-hidden="true">→</span></button><button id="open-rosters">Roster information <span aria-hidden="true">→</span></button></nav>
+    <nav class="menu-list" aria-label="Game information"><button id="change-options">Change options <span aria-hidden="true">→</span></button><button id="open-rules">How to play <span aria-hidden="true">→</span></button><button id="open-rosters">Roster information <span aria-hidden="true">→</span></button></nav>
     <button id="reset" class="text-button">Reset saved scores</button>
     <button id="resume" class="secondary">Back to game</button>
   </section>
   <section id="rules-screen" class="screen info-screen" aria-labelledby="rules-title" hidden>
     <h1 id="rules-title" tabindex="-1">How to play</h1>
-    <p>Guess the first and last name of an NHL player. Spaces and punctuation are shown. Accents use their plain letters.</p>
-    <ol><li>Choose a decade and team, then press Play.</li><li>Select letters to reveal the name. Each wrong letter draws another part of the figure.</li><li>You have six misses. Three correct letters in a row earn one extra miss, once per round.</li></ol>
-    <p>Giving up or leaving after a guess counts as a loss. Streak is your consecutive wins; Best streak is your longest winning streak. Scores save on this device.</p>
+    <p>Guess the first and last name of an NHL player. Spaces and punctuation are shown. For accented letters, choose the letter without the accent. For example, choose E for É in José.</p>
+    <ol><li>Choose a decade and team, then press Play.</li><li>Select letters to reveal the name. Each wrong letter adds a part to the hangman: a head, a body, two arms, and two legs.</li><li>You have six misses. Three correct letters in a row earn one extra miss, once per round.</li></ol>
+    <p>Giving up counts as a loss. If you have guessed a letter, choosing Change options and confirming also counts as a loss. Closing the app does not record a loss. The unfinished round is not saved after the app restarts.</p><p>Streak counts your consecutive wins. Best streak is your longest winning streak. Scores save on this device.</p>
     <button class="secondary info-back">Back to menu</button>
   </section>
   <section id="rosters-screen" class="screen info-screen" aria-labelledby="rosters-title" hidden>

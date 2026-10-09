@@ -47,9 +47,9 @@ Run `npm run ios:sync` and press Command + R in Xcode again. This copies the lat
 - [ ] Start screen shows scores and options; Play opens a separate game screen.
 - [ ] Name and all 26 letter buttons are visible together on an ordinary portrait iPhone.
 - [ ] Decade and team choices are remembered after relaunch.
-- [ ] Play again retains the selection; Change options returns to Start.
+- [ ] Circular Play again retains the selection. Menu > Change options returns to Start.
 - [ ] Leaving after a guess asks for confirmation; Keep playing preserves the round.
-- [ ] Winning and losing reveal the team and position.
+- [ ] Winning and losing reveal the centered player card with the team and position.
 - [ ] Scores remain after closing and reopening the app.
 - [ ] No speaker button or sounds appear.
 - [ ] Content stays clear of the notch and home indicator, including landscape.

@@ -44,8 +44,11 @@ Run `npm run ios:sync` and press Command + R in Xcode again. This copies the lat
 
 ## Quick testing checklist
 
-- [ ] Game loads and all 26 letters respond.
-- [ ] Decade and team filters start a new round.
+- [ ] Start screen shows scores and options; Play opens a separate game screen.
+- [ ] Name and all 26 letter buttons are visible together on an ordinary portrait iPhone.
+- [ ] Decade and team choices are remembered after relaunch.
+- [ ] Play again retains the selection; Change options returns to Start.
+- [ ] Leaving after a guess asks for confirmation; Keep playing preserves the round.
 - [ ] Winning and losing reveal the team and position.
 - [ ] Scores remain after closing and reopening the app.
 - [ ] No speaker button or sounds appear.
@@ -68,3 +71,15 @@ Official documentation:
 - https://capacitorjs.com/docs/ios
 - https://capacitorjs.com/docs/ios/spm
 - https://capacitorjs.com/docs/getting-started/environment-setup
+
+## Pulling a review update
+
+Click Stop (the square) in Xcode first. In Terminal, in this repository folder, run:
+
+```sh
+git pull --ff-only origin mobile/capacitor-ios-prep
+npm ci
+npm run ios:sync
+```
+
+Then return to Xcode and press Command + R. Do not delete the installed app; its existing scores remain under the same bundle ID.

@@ -1,4 +1,13 @@
 const {chromium,webkit}=require('playwright');
-(async()=>{for(const engine of [chromium,webkit]){const browser=await engine.launch({headless:true});const page=await browser.newPage({viewport:{width:390,height:844}});await page.route('**/data/rosters.json',route=>route.abort());await page.goto('http://localhost:8000');await page.getByRole('button',{name:'Retry loading records'}).waitFor();if(await page.locator('.key').count()!==26)throw Error('Missing static keyboard');if(await page.locator('.key:enabled').count()!==0)throw Error('Guessing before load');await page.unroute('**/data/rosters.json');await page.getByRole('button',{name:'Retry loading records'}).click();await page.waitForFunction(()=>document.querySelectorAll('.key:enabled').length===26);if(await page.locator('#sound').count())throw Error('Sound button still present');await page.getByRole('button',{name:'Guess A',exact:true}).click();if(!await page.getByRole('button',{name:'Guess A',exact:true}).isDisabled())throw Error('Guess not registered');await page.screenshot({path:engine===webkit?'safari-preview.png':'loading-preview.png',fullPage:true});
-// An old unversioned helper in cache must never be requested by this release.
-await page.route('**/pools.js',route=>route.fulfill({contentType:'text/javascript',body:'export function playerPool() {}'}));await page.reload();await page.waitForFunction(()=>document.querySelectorAll('.key:enabled').length===26);console.log(engine.name()+': keyboard visible, failed data load handled, retry works, letters clickable, versioned modules work');await browser.close();}})().catch(error=>{console.error(error);process.exit(1);});
+const assert=require('node:assert/strict');
+(async()=>{for(const engine of [chromium,webkit]){
+ const browser=await engine.launch({headless:true});const page=await browser.newPage({viewport:{width:390,height:844}});
+ await page.route('**/data/rosters.json',route=>route.abort());await page.goto(process.env.QA_BASE_URL||'http://localhost:8000');
+ await page.getByRole('button',{name:'Retry loading records'}).waitFor();assert(await page.locator('#start-screen').isVisible());assert.equal(await page.locator('.key:enabled').count(),0);
+ await page.unroute('**/data/rosters.json');await page.getByRole('button',{name:'Retry loading records'}).click();await page.waitForFunction(()=>!document.getElementById('decade').disabled);
+ await page.getByRole('button',{name:'Play',exact:true}).click();assert.equal(await page.locator('.key:enabled').count(),26);
+ await page.getByRole('button',{name:'Guess A',exact:true}).click();assert(await page.getByRole('button',{name:'Guess A',exact:true}).isDisabled());
+ await page.route('**/pools.js',route=>route.fulfill({contentType:'text/javascript',body:'export function playerPool() {}'}));await page.reload();
+ await page.waitForFunction(()=>!document.getElementById('decade').disabled);await page.getByRole('button',{name:'Play',exact:true}).click();assert.equal(await page.locator('.key:enabled').count(),26);
+ console.log(engine.name()+': failed load, retry, screen transition, versioned modules pass');await browser.close();
+}})().catch(error=>{console.error(error);process.exit(1);});

@@ -23,3 +23,6 @@ Not affiliated with the NHL or its teams. No league logos or player images.
 The iOS app uses Capacitor to bundle this same game and NHL snapshot locally. Sound and the speaker button have been removed for now. See [IOS_SETUP.md](IOS_SETUP.md) for Mac prerequisites, simulator instructions, and a testing checklist.
 
 `npm run ios:setup` builds the web assets and creates the native project if needed. `npm run ios:open` rebuilds, syncs, and opens Xcode. No Apple upload or publication is part of these commands. Bundled current rosters reflect the snapshot at build time; a website data refresh does not update an installed native app.
+
+## Mobile screen flow
+Start: choose a decade/team, see saved scores, then tap Play. Options are remembered on this device. Game: only the round, rink, player name, alphabet buttons and give-up action. Result: reveal the player and their team/position, then Play again or Change options. Leaving a round after guessing asks for confirmation and counts as a loss; changing setup options alone does not affect scores. Compact phones use six keyboard columns instead of seven. The name and keyboard stay together on ordinary portrait screens; short screens and larger text may scroll rather than clip controls.

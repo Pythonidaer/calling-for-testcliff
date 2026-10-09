@@ -6,7 +6,6 @@ import argparse, concurrent.futures, datetime, json, pathlib, subprocess, time, 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 STATS = 'https://api.nhle.com/stats/rest/en/'
 WEB = 'https://api-web.nhle.com/v1/'
-CACHE = pathlib.Path('/tmp/ice-time-nhl-cache'); CACHE.mkdir(exist_ok=True)
 
 def fetch(url):
     for attempt in range(3):
@@ -37,6 +36,7 @@ def build(refresh=False):
         if tid not in teams: raise RuntimeError('Unknown team')
         season_teams.setdefault(row['seasonId'],{}).setdefault(teams[tid]['code'],[]).append(tid)
     decades=list(range(1910,open_decade+1,10))
+    if old and 'positions' not in old: old=None
     wanted=[open_decade] if old else decades
     jobs=[(kind,d) for d in wanted for kind in ('skater','goalie')]
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
@@ -46,8 +46,10 @@ def build(refresh=False):
             kind,d=futures[fut]; records[kind,d]=fut.result(); print(kind,d,len(records[kind,d]),flush=True)
     players=old['players'] if old else {}
     pools={d:v for d,v in old['pools'].items() if d not in ('current',str(open_decade))} if old else {}
+    positions={d:v for d,v in old['positions'].items() if d not in ('current',str(open_decade))} if old else {}
     for d in wanted:
         grouped={}
+        pos={}
         for kind in ('skater','goalie'):
             for row in records[kind,d]:
                 if row['gamesPlayed']<1: continue
@@ -59,7 +61,11 @@ def build(refresh=False):
                     ids=season_teams.get(row['seasonId'],{}).get(code.strip(),[])
                     if len(ids)!=1: raise RuntimeError(f'Ambiguous team {code} / {row["seasonId"]}: {ids}')
                     grouped.setdefault(ids[0],set()).add(pid)
+                    position='G' if kind=='goalie' else row.get('positionCode')
+                    if position not in ('C','L','R','D','G'): raise RuntimeError('Unknown position '+str(position))
+                    pos.setdefault(ids[0],{}).setdefault(pid,set()).add(position)
         pools[str(d)]={tid:sorted(ids,key=lambda p:players[p]) for tid,ids in grouped.items()}
+        positions[str(d)]={tid:{pid:sorted(codes) for pid,codes in people.items()} for tid,people in pos.items()}
     # Team summary identifies clubs in the latest recorded NHL season.
     latest=max(season_teams)
     active=[tid for ids in season_teams[latest].values() for tid in ids]
@@ -78,16 +84,22 @@ def build(refresh=False):
         if not people: raise RuntimeError('Empty roster '+code)
         return bycode[code],people
     current_pool={}
+    current_positions={}
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
         for tid,people in ex.map(current,sorted(codes)):
             ids=set()
+            current_positions[tid]={}
             for p in people:
                 pid=str(p['id']);players[pid]=p['firstName']['default']+' '+p['lastName']['default'];ids.add(pid)
+                position=p.get('positionCode')
+                if position not in ('C','L','R','D','G'): raise RuntimeError('Unknown current position')
+                current_positions[tid][pid]=[position]
             current_pool[tid]=sorted(ids,key=lambda p:players[p])
     pools['current']=current_pool
+    positions['current']=current_positions
     used={p for groups in pools.values() for ids in groups.values() for p in ids}
     used_teams={t for groups in pools.values() for t in groups}
-    result={'updated':now.date().isoformat(),'historicalDefinition':'Regular-season appearances; decade uses season start year.','sources':[STATS+'team',STATS+'skater/summary',STATS+'goalie/summary',WEB+'roster/{team}/current'],'teams':{tid:t for tid,t in teams.items() if tid in used_teams},'players':{p:players[p] for p in sorted(used)},'pools':pools}
+    result={'updated':now.date().isoformat(),'historicalDefinition':'Regular-season appearances; decade uses season start year.','sources':[STATS+'team',STATS+'skater/summary',STATS+'goalie/summary',WEB+'roster/{team}/current'],'teams':{tid:t for tid,t in teams.items() if tid in used_teams},'players':{p:players[p] for p in sorted(used)},'pools':pools,'positions':positions}
     target.parent.mkdir(exist_ok=True)
     temp=target.with_suffix('.tmp');temp.write_text(json.dumps(result,ensure_ascii=False,separators=(',',':'))+'\n');temp.replace(target)
     print('Saved',len(result['players']),'players,',len(result['teams']),'team identities,',len(current_pool),'current clubs',flush=True)

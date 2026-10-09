@@ -23,7 +23,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   for(const [selector,ratio] of contrasts)assert(ratio>=4.5,selector+' contrast '+ratio);
   console.log(engine.name()+': label contrast ratios',contrasts);
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
-  await page.getByRole('button',{name:'Open menu',exact:true}).click();assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
   await page.getByRole('button',{name:'Play',exact:true}).click();
   for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
    await page.setViewportSize({width,height});

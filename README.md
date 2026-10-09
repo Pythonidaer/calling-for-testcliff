@@ -7,7 +7,7 @@ Mobile-first NHL hangman with first and last names, six misses, and a once-per-r
 - Team filters use actual historical team identities, including defunct/renamed clubs. Quebec Nordiques and Colorado Avalanche, for example, are separate options. Only teams with records in the selected decade appear.
 - **Current roster** uses NHL's roster endpoint, not accumulated decade appearances. The snapshot date is visible. Nationality is unrestricted; the league is NHL only, U.S. and Canadian clubs.
 - All decades includes historical appearances; current-roster-only newcomers belong in Current roster until an appearance is recorded.
-- No-repeat shuffle within a selected pool; giving up or changing filters after guesses counts as a loss. Device-local score storage. Losing or giving up reveals a player card with the team(s) and recorded position(s) in the selected decade/team; All decades uses career records. Current roster cards use that snapshot’s team and position. No team/position spoilers during play.
+- No-repeat shuffle within a selected pool; giving up or changing filters after guesses counts as a loss. Device-local score storage. Winning, losing, or giving up reveals a player card with the team(s) and recorded position(s) in the selected decade/team; All decades uses career records. Current roster cards use that snapshot’s team and position. No team/position spoilers during play.
 
 ## Sources and refresh
 Official NHL services: https://api.nhle.com/stats/rest/en/team, https://api.nhle.com/stats/rest/en/team/summary, https://api.nhle.com/stats/rest/en/skater/summary, https://api.nhle.com/stats/rest/en/goalie/summary, https://api-web.nhle.com/v1/standings/now, https://api-web.nhle.com/v1/roster/{team}/current.

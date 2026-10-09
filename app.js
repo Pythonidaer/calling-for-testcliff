@@ -1,6 +1,6 @@
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=keyboard-fix-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=player-card-win-1';
 let dataset;
-import {createGame,guess,bodyParts} from './game.js?v=keyboard-fix-1';
+import {createGame,guess,bodyParts} from './game.js?v=player-card-win-1';
 const $=id=>document.getElementById(id);
 let stats={wins:0,streak:0,best:0};try{const s=JSON.parse(localStorage.getItem('ice-time-stats'));if(s)for(const k of Object.keys(stats))if(Number.isSafeInteger(s[k])&&s[k]>=0)stats[k]=s[k];}catch{}
 let game,bag=[],round=0,lastName='',settled=false,playerId;
@@ -16,7 +16,7 @@ function render(){settle();for(const k of Object.keys(stats))$(k).textContent=St
  $('message').textContent=game.status==='won'?`GOAL! ${lastName}. Nicely played.`:game.status==='lost'?`Final whistle. It was ${lastName}.`:game.bonus?'Hat trick! You have one extra miss.':game.misses?'Stay in the game. Pick your next letter.':'Pick a letter. Drop the puck.';
  renderReveal();
  $('next').hidden=game.status==='playing';$('skip').hidden=game.status!=='playing';$('roster-count').textContent=`${pool().length.toLocaleString()} PLAYERS`;$('skip').disabled=false;const current=$('decade').value==='current';$('data-note').textContent=current?`Current roster snapshot: ${dataset.updated}. Refreshed daily.`:`Regular-season appearances · Season start year · Records updated ${dataset.updated}`;}
-function renderReveal(){const card=$('reveal');card.hidden=game.status!=='lost';$('reveal-details').replaceChildren();if(card.hidden)return;const d=$('decade').value;$('reveal-context').textContent=d==='current'?`Current roster · ${dataset.updated}`:d==='all'?'NHL career records':`${d}s · Regular-season records`;for(const detail of playerDetails(dataset,playerId,d,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
+function renderReveal(){const card=$('reveal');card.hidden=game.status==='playing';$('reveal-details').replaceChildren();if(card.hidden)return;const d=$('decade').value;$('reveal-context').textContent=d==='current'?`Current roster · ${dataset.updated}`:d==='all'?'NHL career records':`${d}s · Regular-season records`;for(const detail of playerDetails(dataset,playerId,d,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
 document.querySelectorAll('.key').forEach(b=>{b.onclick=()=>{if(!game)return;game=guess(game,b.textContent);render();};});
 document.addEventListener('keydown',e=>{if(!game||$('rules').open||e.ctrlKey||e.metaKey||e.altKey||e.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(e.key)){game=guess(game,e.key);render();}});
 function filterChange(){if(game?.status==='playing'&&game.guessed.length){game.status='lost';settle();}bag=[];next();}

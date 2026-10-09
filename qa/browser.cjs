@@ -54,6 +54,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   // Confirmed abandonment settles one loss and never increments wins.
   await page.getByRole('button',{name:'Play',exact:true}).click();await page.getByRole('button',{name:'Guess A',exact:true}).click();
   await page.getByRole('button',{name:'Change game options'}).click();await page.locator('#leave').getByRole('button',{name:'Change options',exact:true}).click();
+  await page.locator('#start-screen').waitFor({state:'visible'});
   assert(await page.locator('#start-screen').isVisible());assert.equal(await page.locator('#wins').innerText(),'01');assert.equal(await page.locator('#streak').innerText(),'00');assert.equal(await page.locator('#best').innerText(),'01');
   await page.getByRole('button',{name:'Play',exact:true}).click();
   await page.setViewportSize({width:320,height:568});

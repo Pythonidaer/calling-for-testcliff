@@ -24,6 +24,7 @@ jobs:
           python3 -m http.server 8000 &
           node qa/browser.cjs
           node qa/loading.cjs
+          node qa/audio.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

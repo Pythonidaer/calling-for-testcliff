@@ -18,3 +18,6 @@ Official NHL services: https://api.nhle.com/stats/rest/en/team, https://api.nhle
 `npm start` → http://localhost:8000. `npm test` checks game rules and real roster memberships. GitHub Actions also checks browser gameplay and responsive widths at 320, 390, 768, and 1280px. Static assets and the roster snapshot are served from GitHub Pages `main / (root)` with relative URLs. No live API dependency in the game.
 
 Not affiliated with the NHL or its teams. No league logos or player images.
+
+## Stadium sound
+Tap the speaker to turn sound on (off by default). An original synthesized organ loop shifts up one semitone per miss and speeds from 88 BPM by 9 BPM per miss. A win plays a synthesized trumpet charge with cheering; a loss plays a buzzer with a synthesized booing crowd. Sound is generated locally with Web Audio, requires a user interaction on mobile, and stops when the page is hidden. No third-party recordings, downloads, or streaming services.

@@ -5,3 +5,5 @@
 .word .letter{min-width:0;flex-shrink:1;width:min(clamp(13px,4.6vw,25px),calc((100vw - 44px - (var(--letter-count) - 1)*3px)/var(--letter-count)));font-size:min(clamp(13px,4vw,21px),calc((100vw - 44px - (var(--letter-count) - 1)*3px)/var(--letter-count)))}
 
 .reveal{margin-top:16px;padding:16px;background:#e1e9df;border:1px solid var(--ink);text-align:left}.reveal h2{font:bold 10px 'Courier New',monospace;letter-spacing:1px;margin:0 0 7px;color:var(--red)}#reveal-context{font-size:10px;color:#52656a;margin:0 0 10px}.reveal dl{margin:0}.reveal dl>div{padding:9px 0;border-top:1px solid #102b3320}.reveal dt{font-size:12px;font-weight:bold;overflow-wrap:anywhere}.reveal dd{font:11px 'Courier New',monospace;margin:5px 0 0;color:#52656a}
+
+.header-actions{display:flex;gap:8px;align-items:center}.icon-button svg{display:block;width:21px;height:21px;margin:auto}

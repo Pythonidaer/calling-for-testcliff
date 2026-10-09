@@ -1,0 +1,8 @@
+{
+  "appId": "com.pythonidaer.icetime",
+  "appName": "Ice Time",
+  "webDir": "dist",
+  "ios": {
+    "backgroundColor": "#f4f0e6"
+  }
+}

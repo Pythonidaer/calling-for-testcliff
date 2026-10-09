@@ -19,5 +19,7 @@ Official NHL services: https://api.nhle.com/stats/rest/en/team, https://api.nhle
 
 Not affiliated with the NHL or its teams. No league logos or player images.
 
-## Stadium sound
-Tap the speaker to turn sound on (off by default). An original synthesized organ loop shifts up one semitone per miss and speeds from 88 BPM by 9 BPM per miss. A win plays a synthesized trumpet charge with cheering; a loss plays a buzzer with a synthesized booing crowd. Sound is generated locally with Web Audio, requires a user interaction on mobile, and stops when the page is hidden. No third-party recordings, downloads, or streaming services.
+## iOS simulator preparation
+The iOS app uses Capacitor to bundle this same game and NHL snapshot locally. Sound and the speaker button have been removed for now. See [IOS_SETUP.md](IOS_SETUP.md) for Mac prerequisites, simulator instructions, and a testing checklist.
+
+`npm run ios:setup` builds the web assets and creates the native project if needed. `npm run ios:open` rebuilds, syncs, and opens Xcode. No Apple upload or publication is part of these commands. Bundled current rosters reflect the snapshot at build time; a website data refresh does not update an installed native app.

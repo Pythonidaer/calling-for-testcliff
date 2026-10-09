@@ -1,1 +1,24 @@
-{"name":"ice-time-hockey-hangman","private":true,"type":"module","scripts":{"test":"node --test","start":"python3 -m http.server 8000"}}
+{
+  "name": "ice-time-hockey-hangman",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "start": "python3 -m http.server 8000",
+    "build": "node scripts/build-web.mjs",
+    "ios:setup": "npm run build && node scripts/setup-ios.mjs",
+    "ios:sync": "npm run build && cap sync ios",
+    "ios:open": "npm run ios:sync && cap open ios"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@capacitor/core": "8.5.3",
+    "@capacitor/ios": "8.5.3"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.3",
+    "playwright": "1.58.2"
+  }
+}

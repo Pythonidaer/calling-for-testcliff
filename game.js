@@ -1,4 +1,4 @@
-export const normalize = name => name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
+export const normalize = name => name.replace(/ø/g,'o').replace(/Ø/g,'O').replace(/ł/g,'l').replace(/Ł/g,'L').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toUpperCase();
 export function createGame(name) {return {name:normalize(name),guessed:[],misses:0,run:0,bonus:false,status:'playing'};}
 export function guess(game, letter) {
  letter=letter.toUpperCase();

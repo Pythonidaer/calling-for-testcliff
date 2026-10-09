@@ -1,0 +1,2 @@
+export function availableTeams(data,decade){const ids=decade==='all'?Object.keys(data.teams):Object.keys(data.pools[decade]||{});return ids.sort((a,b)=>data.teams[a].name.localeCompare(data.teams[b].name));}
+export function playerPool(data,decade,team){const groups=decade==='all'?Object.entries(data.pools).filter(([d])=>d!=='current').map(([,v])=>v):[data.pools[decade]||{}];const ids=new Set();for(const group of groups)for(const [id,players]of Object.entries(group))if(team==='all'||id===team)for(const pid of players)ids.add(pid);return [...ids];}

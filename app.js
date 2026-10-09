@@ -1,10 +1,11 @@
-import {roster} from './roster.js';
+import {playerPool,availableTeams} from './pools.js';
+let dataset;
 import {createGame,guess,bodyParts} from './game.js';
 const $=id=>document.getElementById(id);
 let stats={wins:0,streak:0,best:0};try{const s=JSON.parse(localStorage.getItem('ice-time-stats'));if(s)for(const k of Object.keys(stats))if(Number.isSafeInteger(s[k])&&s[k]>=0)stats[k]=s[k];}catch{}
 let game,bag=[],round=0,lastName='',settled=false;
 function save(){try{localStorage.setItem('ice-time-stats',JSON.stringify(stats));}catch{} }
-function pool(){return $('era').value==='all'?Object.values(roster).flat():roster[$('era').value];}
+function pool(){return playerPool(dataset,$('decade').value,$('team').value).map(id=>dataset.players[id]);}
 function refill(){bag=[...pool()];for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}if(bag.at(-1)===lastName&&bag.length>1)[bag[0],bag[bag.length-1]]=[bag.at(-1),bag[0]];}
 function next(){if(!bag.length)refill();lastName=bag.pop();game=createGame(lastName);round++;settled=false;render();}
 function settle(){if(settled||game.status==='playing')return;settled=true;if(game.status==='won'){stats.wins++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);}else stats.streak=0;save();}
@@ -13,7 +14,13 @@ function render(){settle();for(const k of Object.keys(stats))$(k).textContent=St
  const parts=bodyParts(game);document.querySelectorAll('[data-part]').forEach(el=>el.classList.toggle('shown',Number(el.dataset.part)<=parts));$('drawing').setAttribute('aria-label',`Gallows with ${parts} of 6 body parts`);
  document.querySelectorAll('.key').forEach(el=>{const used=game.guessed.includes(el.textContent);el.disabled=used||game.status!=='playing';el.className='key'+(used?(game.name.includes(el.textContent)?' hit':' miss'):'');});
  $('message').textContent=game.status==='won'?`GOAL! ${lastName}. Nicely played.`:game.status==='lost'?`Final whistle. It was ${lastName}.`:game.bonus?'Hat trick! You have one extra miss.':game.misses?'Stay in the game. Pick your next letter.':'Pick a letter. Drop the puck.';
- $('next').hidden=game.status==='playing';$('skip').hidden=game.status!=='playing';$('roster-count').textContent=`${pool().length} PLAYERS`;}
-for(const row of ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM']){const r=document.createElement('div');r.className='key-row';for(const c of row){const b=document.createElement('button');b.className='key';b.textContent=c;b.setAttribute('aria-label',`Guess ${c}`);b.onclick=()=>{game=guess(game,c);render();};r.append(b);}$('keyboard').append(r);}
-document.addEventListener('keydown',e=>{if($('rules').open||e.ctrlKey||e.metaKey||e.altKey||e.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(e.key)){game=guess(game,e.key);render();}});
-$('next').onclick=next;$('skip').onclick=()=>{game={...game,status:'lost',misses:6+Number(game.bonus)};render();};$('era').onchange=()=>{if(game.status==='playing'&&game.guessed.length){game.status='lost';settle();}bag=[];next();};$('help').onclick=()=>$('rules').showModal();$('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?')){stats={wins:0,streak:0,best:0};save();render();}};next();
+ $('next').hidden=game.status==='playing';$('skip').hidden=game.status!=='playing';$('roster-count').textContent=`${pool().length.toLocaleString()} PLAYERS`;$('skip').disabled=false;const current=$('decade').value==='current';$('data-note').textContent=current?`Current roster snapshot: ${dataset.updated}. Refreshed daily.`:`Regular-season appearances · Season start year · Records updated ${dataset.updated}`;}
+for(const row of ['QWERTYUIOP','ASDFGHJKL','ZXCVBNM']){const r=document.createElement('div');r.className='key-row';for(const c of row){const b=document.createElement('button');b.className='key';b.textContent=c;b.setAttribute('aria-label',`Guess ${c}`);b.disabled=true;b.onclick=()=>{if(!game)return;game=guess(game,c);render();};r.append(b);}$('keyboard').append(r);}
+document.addEventListener('keydown',e=>{if(!game||$('rules').open||e.ctrlKey||e.metaKey||e.altKey||e.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(e.key)){game=guess(game,e.key);render();}});
+function filterChange(){if(game?.status==='playing'&&game.guessed.length){game.status='lost';settle();}bag=[];next();}
+function teamOptions(){const previous=$('team').value;const ids=availableTeams(dataset,$('decade').value);$('team').replaceChildren(new Option('All teams','all'));for(const id of ids){const t=dataset.teams[id];const historic=!dataset.pools.current[id];$('team').add(new Option(t.name+(historic?' (historical)':''),id));}$('team').value=ids.includes(previous)?previous:'all';}
+$('next').onclick=next;$('skip').onclick=()=>{game={...game,status:'lost',misses:6+Number(game.bonus)};render();};
+$('decade').onchange=()=>{teamOptions();filterChange();};$('team').onchange=filterChange;
+$('help').onclick=()=>$('rules').showModal();$('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?')){stats={wins:0,streak:0,best:0};save();if(game)render();}};
+async function load(){try{const response=await fetch('./data/rosters.json');if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');$('decade').replaceChildren(new Option('All decades','all'),new Option('Current roster','current'));for(const d of Object.keys(dataset.pools).filter(d=>d!=='current').sort((a,b)=>b-a))$('decade').add(new Option(d+'s',d));$('decade').value='all';teamOptions();$('decade').disabled=false;$('team').disabled=false;next();}catch(error){console.error(error);$('message').textContent='NHL records could not load. Check your connection and try again.';$('next').hidden=false;$('next').textContent='Retry loading records';$('next').onclick=()=>location.reload();}}
+load();

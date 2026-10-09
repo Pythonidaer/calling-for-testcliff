@@ -40,7 +40,7 @@ $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?'))
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
 document.addEventListener('keydown',event=>{if(screen!=='game'||$('rules').open||$('leave').open||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
 async function load(){
- $('play').disabled=true;$('play').textContent='Play →';$('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
+ $('play').disabled=true;$('play').innerHTML='Play <span aria-hidden="true">→</span>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
  try{
   const response=await fetch('./data/rosters.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.positions?.current||!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');

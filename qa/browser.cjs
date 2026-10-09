@@ -14,7 +14,16 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   await page.goto(url);await page.waitForFunction(()=>!document.getElementById('decade').disabled);
   assert(await page.locator('#start-screen').isVisible());assert(!(await page.locator('#game-screen').isVisible()));
   assert.equal(await page.locator('#sound').count(),0);
+  // Check the rendered colors of the small labels and scoreboard, not screenshot pixels.
+  const contrasts=await page.evaluate(()=>{
+   const rgb=c=>c.match(/[\d.]+/g).slice(0,3).map(Number);
+   const luminance=c=>rgb(c).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);
+   return ['.brand small','#roster-count','.scoreboard dt','.scoreboard dd'].map(selector=>{const el=document.querySelector(selector);let bg=el;while(getComputedStyle(bg).backgroundColor==='rgba(0, 0, 0, 0)')bg=bg.parentElement;const a=luminance(getComputedStyle(el).color),b=luminance(getComputedStyle(bg).backgroundColor);return [selector,(Math.max(a,b)+.05)/(Math.min(a,b)+.05)];});
+  });
+  for(const [selector,ratio] of contrasts)assert(ratio>=4.5,selector+' contrast '+ratio);
+  console.log(engine.name()+': label contrast ratios',contrasts);
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
   await page.getByRole('button',{name:'Play',exact:true}).click();
   for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
    await page.setViewportSize({width,height});
@@ -24,7 +33,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
    assert(await page.locator('.key').first().evaluate(el=>el.getBoundingClientRect().width>=44&&el.getBoundingClientRect().height>=44),'Small tap target');
   }
   await page.setViewportSize({width:390,height:844});
-  await page.getByRole('button',{name:'How to play'}).click();await page.getByRole('button',{name:'Close rules'}).click();
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'How to play',exact:true}).click();assert(await page.locator('#rules-screen').isVisible());await page.getByRole('button',{name:'Back to menu',exact:true}).click();await page.getByRole('button',{name:'Roster information',exact:true}).click();assert(await page.locator('#rosters-screen').isVisible());await page.getByRole('button',{name:'Close menu',exact:true}).click();assert(await page.locator('#game-screen').isVisible());
   await page.screenshot({path:engine.name()+'-game-preview.png',fullPage:true});
   // Empty rounds can return to setup without changing scores.
   await page.getByRole('button',{name:'Change game options'}).click();
@@ -33,6 +42,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   assert(parseInt(await page.locator('#roster-count').innerText().then(t=>t.replaceAll(',','')))>10);
   await page.getByRole('button',{name:'Play',exact:true}).click();
   await page.getByRole('button',{name:'Guess A',exact:true}).click();
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'Resume round',exact:true}).click();assert(await page.getByRole('button',{name:'Guess A',exact:true}).isDisabled());
   await page.getByRole('button',{name:'Change game options'}).click();assert(await page.locator('#leave').isVisible());
   await page.getByRole('button',{name:'Keep playing'}).click();assert(await page.locator('#game-screen').isVisible());
   assert(await page.getByRole('button',{name:'Guess A',exact:true}).isDisabled());

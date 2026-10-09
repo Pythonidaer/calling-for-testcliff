@@ -7,25 +7,23 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Ice Time — Hockey Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=screen-flow-1">
-  <script type="module" src="bootstrap.js?v=screen-flow-1"></script>
+  <link rel="stylesheet" href="styles.css?v=menu-scoreboard-1">
+  <script type="module" src="bootstrap.js?v=menu-scoreboard-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
   <header>
     <button id="back" class="icon-button" aria-label="Change game options" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
-    <div class="brand"><span class="logo" aria-hidden="true">✦</span><span>ICE TIME<small>HOCKEY HANGMAN</small></span></div>
-    <button id="help" class="icon-button" aria-label="How to play">?</button>
+    <div class="brand"><svg class="logo" viewBox="0 0 48 40" aria-hidden="true"><path d="M5 14v12c0 6 38 6 38 0V14" fill="currentColor"/><ellipse cx="24" cy="14" rx="19" ry="8" fill="currentColor"/><path d="M9 17c8 5 22 5 30 0M10 26c7 3 21 3 28 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span>ICE TIME<small>HOCKEY HANGMAN</small></span></div>
+    <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   </header>
   <section id="start-screen" class="screen start-screen" aria-labelledby="start-title">
-    <div class="intro"><span class="eyebrow">THE NAME. THE LEGEND. THE GAME.</span><h1 id="start-title" tabindex="-1">Know your hockey?</h1><p>A century of NHL names. Pick your lineup.</p></div>
-    <div class="scoreboard" aria-label="Your scores"><div><span>WINS</span><strong id="wins">00</strong></div><div><span>STREAK</span><strong id="streak">00</strong></div><div><span>BEST</span><strong id="best">00</strong></div></div>
+    <div class="intro"><h1 id="start-title" tabindex="-1">Know your hockey?</h1><p>Choose a decade and team, then guess the player.</p></div>
+    <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">YOUR RECORD</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
     <div class="filters"><div class="filter"><label for="decade">DECADE</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL TEAM</label><select id="team" disabled><option>All teams</option></select></div></div>
     <p id="roster-count" class="pool-count"></p>
     <button id="play" class="primary" disabled>Play <span aria-hidden="true">→</span></button>
     <p id="load-status" role="status">Loading NHL records…</p>
-    <details class="record-info"><summary>About these rosters</summary><p id="data-note"></p><p>Not affiliated with the NHL or its teams.</p></details>
-    <footer>NO CLOCK. JUST HOCKEY.</footer>
   </section>
   <section id="game-screen" class="screen game-screen" aria-label="Hockey hangman game" hidden>
     <section class="rink" aria-label="Hangman rink"><div class="rink-circle"></div><div class="rink-line"></div><div class="rink-top"><span id="round" tabindex="-1">FACEOFF 01</span><span id="chances">6 MISSES LEFT</span></div>
@@ -41,9 +39,29 @@
     <p id="result-stats" class="result-stats"></p>
     <div class="result-actions"><button id="next" class="primary">Play again <span aria-hidden="true">→</span></button><button id="change-options" class="secondary">Change options</button></div>
   </section>
+  <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
+    <h1 id="menu-title" tabindex="-1">Menu</h1>
+    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <span aria-hidden="true">→</span></button><button id="open-rosters">Roster information <span aria-hidden="true">→</span></button></nav>
+    <button id="reset" class="text-button">Reset saved scores</button>
+    <button id="resume" class="secondary">Back to game</button>
+  </section>
+  <section id="rules-screen" class="screen info-screen" aria-labelledby="rules-title" hidden>
+    <h1 id="rules-title" tabindex="-1">How to play</h1>
+    <p>Guess the first and last name of an NHL player. Spaces and punctuation are shown. Accents use their plain letters.</p>
+    <ol><li>Choose a decade and team, then press Play.</li><li>Select letters to reveal the name. Each wrong letter draws another part of the figure.</li><li>You have six misses. Three correct letters in a row earn one extra miss, once per round.</li></ol>
+    <p>Giving up or leaving after a guess counts as a loss. Streak is your consecutive wins; Best streak is your longest winning streak. Scores save on this device.</p>
+    <button class="secondary info-back">Back to menu</button>
+  </section>
+  <section id="rosters-screen" class="screen info-screen" aria-labelledby="rosters-title" hidden>
+    <h1 id="rosters-title" tabindex="-1">Roster information</h1>
+    <p id="data-note"></p>
+    <h2>Historical players</h2><p>Players are included when they have a recorded regular-season appearance for the selected team. Defunct and renamed teams keep their historical names.</p>
+    <h2>Decades</h2><p>Decades use the season’s start year. For example, the 1989–90 season belongs to the 1980s.</p>
+    <h2>Current roster</h2><p>This is a dated roster snapshot. An installed iOS app receives newer roster data with an app update.</p>
+    <p>Not affiliated with the NHL or its teams.</p><button class="secondary info-back">Back to menu</button>
+  </section>
   <noscript><p>Enable JavaScript to play Ice Time.</p></noscript>
 </main>
-<dialog id="rules"><form method="dialog"><button class="close" aria-label="Close rules">×</button></form><span class="eyebrow">THE RULEBOOK</span><h2>Six misses.<br>One hockey name.</h2><p>Guess the first and last name of a male NHL player from a U.S. or Canadian NHL team. Spaces, hyphens, and punctuation are already shown. Accents use their plain letters.</p><ol><li>Each wrong letter adds a part: head, body, two arms, two legs.</li><li>Get three correct letters in a row to earn a <b>hat-trick bonus</b>: one extra miss. Once per round.</li><li>With a bonus, your sixth miss is saved. The final leg appears on miss seven.</li></ol><p>Decades use the season’s start year: 1989–90 belongs to the 1980s. Historical pools contain players with recorded regular-season appearances for that team. Current roster is a dated NHL roster snapshot. In the iOS app, it updates when a newer app build is installed. Defunct and renamed teams keep their historical names.</p><p>Use the onscreen letters or your keyboard. Choose your decade and team before pressing Play. Giving up or leaving a round after guessing counts as a loss. Scores save on this device.</p><button id="reset" class="text-button">Reset saved scores</button></dialog>
 <dialog id="leave"><h2>Leave this round?</h2><p>Your guesses will be cleared and this round will count as a loss.</p><form method="dialog" class="leave-actions"><button class="secondary" value="stay" autofocus>Keep playing</button><button class="primary" value="leave">Change options</button></form></dialog>
 </body>
 </html>

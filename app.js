@@ -1,8 +1,8 @@
-import {StadiumAudio} from './sound.js?v=stadium-audio-1';
+import {StadiumAudio} from './sound.js?v=stadium-audio-2';
 const audio=new StadiumAudio();
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=stadium-audio-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=stadium-audio-2';
 let dataset;
-import {createGame,guess,bodyParts} from './game.js?v=stadium-audio-1';
+import {createGame,guess,bodyParts} from './game.js?v=stadium-audio-2';
 const $=id=>document.getElementById(id);
 let stats={wins:0,streak:0,best:0};try{const s=JSON.parse(localStorage.getItem('ice-time-stats'));if(s)for(const k of Object.keys(stats))if(Number.isSafeInteger(s[k])&&s[k]>=0)stats[k]=s[k];}catch{}
 let game,bag=[],round=0,lastName='',settled=false,playerId;
@@ -28,7 +28,7 @@ $('next').onclick=next;$('skip').onclick=()=>{game={...game,status:'lost',misses
 $('decade').onchange=()=>{teamOptions();filterChange();};$('team').onchange=filterChange;
 $('help').onclick=()=>$('rules').showModal();$('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?')){stats={wins:0,streak:0,best:0};save();if(game)render();}};
 async function load(){$('message').textContent='Loading NHL records…';$('next').hidden=true;$('decade').disabled=true;$('team').disabled=true;const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);try{const response=await fetch('./data/rosters.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.positions?.current||!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');$('decade').replaceChildren(new Option('All decades','all'),new Option('Current roster','current'));for(const d of Object.keys(dataset.pools).filter(d=>d!=='current').sort((a,b)=>b-a))$('decade').add(new Option(d+'s',d));$('decade').value='all';teamOptions();$('decade').disabled=false;$('team').disabled=false;$('next').textContent='Next faceoff →';$('next').onclick=next;next();}catch(error){console.error(error);$('message').textContent='NHL records could not load. Check your connection and try again.';$('next').hidden=false;$('next').textContent='Retry loading records';$('next').onclick=load;}finally{clearTimeout(timeout);}}
-$('sound').onclick=()=>{const enabled=audio.setEnabled(!audio.enabled);$('sound').setAttribute('aria-pressed',String(enabled));$('sound').setAttribute('aria-label',enabled?'Turn sound off':'Turn sound on');$('sound').title=enabled?'Sound on':'Sound off';$('sound').querySelector('.sound-slash').hidden=enabled;$('sound').querySelector('.sound-waves').hidden=!enabled;if(enabled&&game?.status==='playing')audio.organ(game.misses);};
+$('sound').onclick=()=>{const enabled=audio.setEnabled(!audio.enabled);$('sound').setAttribute('aria-pressed',String(enabled));$('sound').setAttribute('aria-label',enabled?'Turn sound off':'Turn sound on');$('sound').title=enabled?'Sound on':'Sound off';$('sound').querySelector('.sound-slash').toggleAttribute('hidden',enabled);$('sound').querySelector('.sound-waves').toggleAttribute('hidden',!enabled);if(enabled&&game?.status==='playing')audio.organ(game.misses);};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)audio.stop();else if(audio.enabled&&game?.status==='playing')audio.organ(game.misses);});
 window.addEventListener('pagehide',()=>audio.stop());
 load();

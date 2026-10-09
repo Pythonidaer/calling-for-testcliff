@@ -33,7 +33,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
    assert(await page.locator('.key').first().evaluate(el=>el.getBoundingClientRect().width>=44&&el.getBoundingClientRect().height>=44),'Small tap target');
   }
   await page.setViewportSize({width:390,height:844});
-  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'How to play',exact:true}).click();assert(await page.locator('#rules-screen').isVisible());await page.getByRole('button',{name:'Back to menu',exact:true}).click();await page.getByRole('button',{name:'Roster information',exact:true}).click();assert(await page.locator('#rosters-screen').isVisible());await page.getByRole('button',{name:'Close menu',exact:true}).click();assert(await page.locator('#game-screen').isVisible());
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'How to play',exact:true}).click();assert(await page.locator('#rules-screen').isVisible());await page.locator('#rules-screen').getByRole('button',{name:'Back to menu',exact:true}).click();await page.getByRole('button',{name:'Roster information',exact:true}).click();assert(await page.locator('#rosters-screen').isVisible());await page.getByRole('button',{name:'Close menu',exact:true}).click();assert(await page.locator('#game-screen').isVisible());
   await page.screenshot({path:engine.name()+'-game-preview.png',fullPage:true});
   // Empty rounds can return to setup without changing scores.
   await page.getByRole('button',{name:'Change game options'}).click();

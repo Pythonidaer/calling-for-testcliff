@@ -7,13 +7,13 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=spacing-1">
-  <script type="module" src="bootstrap.js?v=spacing-1"></script>
+  <link rel="stylesheet" href="styles.css?v=home-exit-1">
+  <script type="module" src="bootstrap.js?v=home-exit-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
   <header>
-    <button id="back" class="icon-button" aria-label="Change game options" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+    <button id="back" class="icon-button" aria-label="Exit to Home Screen" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
     <div class="brand"><svg class="logo" viewBox="4 5 40 28" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span class="brand-text"><span class="brand-title">HAT TRICK</span><small><span>H</span><span>A</span><span>N</span><span>G</span><span>M</span><span>A</span><span>N</span></small></span></div>
     <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   </header>
@@ -41,7 +41,7 @@
   </section>
   <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
     <h1 id="menu-title" tabindex="-1">Menu</h1>
-    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <span aria-hidden="true">→</span></button><button id="change-options">Change options <span aria-hidden="true">→</span></button><button id="open-rosters">Roster information <span aria-hidden="true">→</span></button></nav>
+    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <span aria-hidden="true">→</span></button><button id="change-options">Exit to Home Screen <span aria-hidden="true">→</span></button><button id="open-rosters">Roster information <span aria-hidden="true">→</span></button></nav>
     <button id="reset" class="text-button">Reset saved scores</button>
     <button id="resume" class="secondary">Back to game</button>
   </section>
@@ -49,7 +49,7 @@
     <h1 id="rules-title" tabindex="-1">How to play</h1>
     <p>Guess the first and last name of an NHL player. Spaces and punctuation are shown. For accented letters, choose the letter without the accent. For example, choose E for É in José.</p>
     <ol><li>Choose a decade and team, then press Play.</li><li>Select letters to reveal the name. Each wrong letter adds a part to the hangman: a head, a body, two arms, and two legs.</li><li>You have six misses. Three correct letters in a row earn one extra miss, once per round.</li></ol>
-    <p>Giving up counts as a loss. If you have guessed a letter, choosing Change options and confirming also counts as a loss. Closing the app does not record a loss. The unfinished round is not saved after the app restarts.</p><p>Streak counts your consecutive wins. Best streak is your longest winning streak. Scores save on this device.</p>
+    <p>Giving up counts as a loss. Exit to Home Screen clears the unfinished round without counting a loss. Closing the app does not record a loss. The unfinished round is not saved after the app restarts.</p><p>Streak counts your consecutive wins. Best streak is your longest winning streak. Scores save on this device.</p>
     <button class="secondary info-back">Back to menu</button>
   </section>
   <section id="rosters-screen" class="screen info-screen" aria-labelledby="rosters-title" hidden>
@@ -62,6 +62,6 @@
   </section>
   <noscript><p>Enable JavaScript to play Hat Trick Hangman.</p></noscript>
 </main>
-<dialog id="leave"><h2>Leave this round?</h2><p>Your guesses will be cleared and this round will count as a loss.</p><form method="dialog" class="leave-actions"><button class="secondary" value="stay" autofocus>Keep playing</button><button class="primary" value="leave">Change options</button></form></dialog>
+
 </body>
 </html>

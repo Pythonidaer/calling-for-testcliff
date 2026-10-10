@@ -1,5 +1,5 @@
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=spacing-1';
-import {createGame,guess,bodyParts} from './game.js?v=spacing-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=home-exit-1';
+import {createGame,guess,bodyParts} from './game.js?v=home-exit-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -7,7 +7,7 @@ let preferences={decade:'all',team:'all'};
 try{const saved=JSON.parse(localStorage.getItem('ice-time-stats'));if(saved)for(const key of Object.keys(stats))if(Number.isSafeInteger(saved[key])&&saved[key]>=0)stats[key]=saved[key];}catch{}
 try{const saved=JSON.parse(localStorage.getItem('ice-time-options'));if(saved&&typeof saved.decade==='string'&&typeof saved.team==='string')preferences=saved;}catch{}
 function save(){try{localStorage.setItem('ice-time-stats',JSON.stringify(stats));}catch{}}
-function showScreen(value){screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Change game options');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value+'-title');heading.focus({preventScroll:true});}
+function showScreen(value){screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Exit to Home Screen');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value+'-title');heading.focus({preventScroll:true});}
 function openMenu(){if(['menu','rules','rosters'].includes(screen)){showScreen(returnScreen);return;}returnScreen=screen;$('resume').textContent=screen==='game'?'Resume round':screen==='result'?'Back to result':'Back to start';showScreen('menu');}
 function renderStats(){for(const key of Object.keys(stats))$(key).textContent=String(stats[key]).padStart(2,'0');}
 function pool(){return [...new Set(playerPool(dataset,$('decade').value,$('team').value).map(id=>dataset.players[id]))];}
@@ -30,17 +30,16 @@ function renderGame(){
 }
 function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'Goal!':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
 function chooseLetter(letter){if(screen!=='game'||!game)return;const previous=game;game=guess(game,letter);if(game!==previous)renderGame();}
-function goToOptions(){if(['rules','rosters'].includes(screen)){showScreen('menu');return;}if(screen==='menu'){showScreen(returnScreen);return;}requestOptions(screen);}
-function requestOptions(from){if(from==='game'&&game?.status==='playing'&&game.guessed.length){$('leave').showModal();return;}showScreen('start');}
-$('leave').addEventListener('close',()=>{if($('leave').returnValue==='leave'){game={...game,status:'lost'};settle();showScreen('start');}});
-$('back').onclick=goToOptions;$('change-options').onclick=()=>requestOptions(returnScreen);
+function exitHome(){game=undefined;showScreen('start');}
+function goBack(){if(['rules','rosters'].includes(screen)){showScreen('menu');return;}if(screen==='menu'){showScreen(returnScreen);return;}exitHome();}
+$('back').onclick=goBack;$('change-options').onclick=exitHome;
 $('play').onclick=next;$('next').onclick=next;
 $('skip').onclick=()=>{game={...game,status:'lost',misses:6+Number(game.bonus)};renderGame();};
 $('decade').onchange=()=>{teamOptions();updateOptions();};$('team').onchange=updateOptions;
 $('menu-toggle').onclick=openMenu;$('resume').onclick=()=>showScreen(returnScreen);$('open-rules').onclick=()=>showScreen('rules');$('open-rosters').onclick=()=>showScreen('rosters');for(const button of document.querySelectorAll('.info-back'))button.onclick=()=>showScreen('menu');
 $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?')){stats={wins:0,streak:0,best:0};save();renderStats();}};
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
-document.addEventListener('keydown',event=>{if(screen!=='game'||$('leave').open||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
+document.addEventListener('keydown',event=>{if(screen!=='game'||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
 async function load(){
  $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>Play</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);

@@ -1,5 +1,5 @@
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=hat-trick-1';
-import {createGame,guess,bodyParts} from './game.js?v=hat-trick-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=spacing-1';
+import {createGame,guess,bodyParts} from './game.js?v=spacing-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -21,14 +21,14 @@ function renderName(){const name=$('name');name.replaceChildren();for(const word
 function renderGame(){
  $('round').textContent=`FACEOFF ${String(round).padStart(2,'0')}`;
  $('chances').textContent=`${6+Number(game.bonus)-game.misses} MISSES LEFT`;
- $('bonus').textContent=game.bonus?'✦ BONUS MISS EARNED':`✦ HAT TRICK: ${Math.min(3,game.run)} / 3`;
+ $('bonus').textContent=game.bonus?'Bonus earned':`Hat trick: ${Math.min(3,game.run)} / 3`;
  renderName();
  const parts=bodyParts(game);document.querySelectorAll('[data-part]').forEach(el=>el.classList.toggle('shown',Number(el.dataset.part)<=parts));$('drawing').setAttribute('aria-label',`Gallows with ${parts} of 6 body parts`);
  document.querySelectorAll('.key').forEach(el=>{const used=game.guessed.includes(el.textContent);el.disabled=used||game.status!=='playing';el.className='key'+(used?(game.name.includes(el.textContent)?' hit':' miss'):'');});
  $('message').textContent=game.bonus?'Bonus earned: one extra miss.':'';
  if(game.status!=='playing'){settle();renderResult();showScreen('result');}
 }
-function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'Goal!':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-context').textContent=decade==='current'?`Current roster · ${dataset.updated}`:decade==='all'?'NHL career records':`${decade}s · Regular-season records`;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
+function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'Goal!':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
 function chooseLetter(letter){if(screen!=='game'||!game)return;const previous=game;game=guess(game,letter);if(game!==previous)renderGame();}
 function goToOptions(){if(['rules','rosters'].includes(screen)){showScreen('menu');return;}if(screen==='menu'){showScreen(returnScreen);return;}requestOptions(screen);}
 function requestOptions(from){if(from==='game'&&game?.status==='playing'&&game.guessed.length){$('leave').showModal();return;}showScreen('start');}
@@ -42,7 +42,7 @@ $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?'))
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
 document.addEventListener('keydown',event=>{if(screen!=='game'||$('leave').open||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
 async function load(){
- $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg><span>Play</span>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
+ $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>Play</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
  try{
   const response=await fetch('./data/rosters.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.positions?.current||!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');

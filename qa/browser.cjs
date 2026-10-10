@@ -13,7 +13,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto(url);await page.waitForFunction(()=>!document.getElementById('decade').disabled);
   assert(await page.locator('#start-screen').isVisible());assert(!(await page.locator('#game-screen').isVisible()));
-  assert.equal(await page.locator('#sound').count(),0);
+  assert.equal(await page.locator('#sound').count(),0);assert(await page.locator('.brand').evaluate(el=>Math.abs(el.querySelector('.brand-title').getBoundingClientRect().width-el.querySelector('small').getBoundingClientRect().width)<1));assert(await page.locator('#play').evaluate(el=>el.querySelector('span').getBoundingClientRect().bottom<=el.querySelector('svg').getBoundingClientRect().top));
   // Check the rendered colors of the small labels and scoreboard, not screenshot pixels.
   const contrasts=await page.evaluate(()=>{
    const rgb=c=>c.match(/[\d.]+/g).slice(0,3).map(Number);
@@ -24,11 +24,11 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   console.log(engine.name()+': label contrast ratios',contrasts);
   assert(await page.locator('#play').evaluate(el=>getComputedStyle(el).borderRadius==='50%'&&el.getBoundingClientRect().width>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
-  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().innerText(),'How to play →');await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
   await page.getByRole('button',{name:'Play',exact:true}).click();
   for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
    await page.setViewportSize({width,height});
-   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Horizontal overflow '+width);
+   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Horizontal overflow '+width);assert(await page.locator('.rink-bottom').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=13));assert(await page.locator('#name').evaluate(el=>el.getBoundingClientRect().top-document.querySelector('.rink').getBoundingClientRect().bottom>=20&&document.querySelector('#keyboard').getBoundingClientRect().top-el.getBoundingClientRect().bottom>=20));
    assert(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1),'Vertical overflow '+width+'x'+height);
    assert(await page.locator('#keyboard').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight),'Keyboard below screen');
    assert(await page.locator('.key').first().evaluate(el=>el.getBoundingClientRect().width>=44&&el.getBoundingClientRect().height>=44),'Small tap target');
@@ -50,6 +50,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   await page.getByRole('button',{name:'Give up & reveal'}).click();assert(await page.locator('#result-screen').isVisible());
   assert.equal(await page.locator('#result-title').innerText(),'Game Over');
   assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>getComputedStyle(el).borderRadius==='50%'));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
+  assert.equal(await page.locator('#reveal-title').count(),0);assert.equal(await page.locator('#reveal-context').count(),0);assert(await page.locator('#next').evaluate(el=>{const r=el.getBoundingClientRect(),answer=document.querySelector('#reveal').getBoundingClientRect();return Math.abs((r.top+r.bottom)/2-(answer.bottom+innerHeight-16)/2)<5;}));
   const loss=await page.locator('#reveal-details').innerText();assert(loss.includes('Quebec Nordiques')&&!loss.includes('Colorado Avalanche'));
   await page.getByRole('button',{name:'Play again'}).click();assert(await page.locator('#game-screen').isVisible());assert(!(await page.locator('#result-screen').isVisible()));
   await page.getByRole('button',{name:'Change game options'}).click();

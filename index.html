@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f4f0e6">
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
-  <title>Ice Time — Hockey Hangman</title>
+  <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=round-refinement-1">
-  <script type="module" src="bootstrap.js?v=round-refinement-1"></script>
+  <link rel="stylesheet" href="styles.css?v=hat-trick-1">
+  <script type="module" src="bootstrap.js?v=hat-trick-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
   <header>
     <button id="back" class="icon-button" aria-label="Change game options" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
-    <div class="brand"><svg class="logo" viewBox="0 0 48 40" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span>ICE TIME<small>HOCKEY HANGMAN</small></span></div>
+    <div class="brand"><svg class="logo" viewBox="0 0 48 40" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span>HAT TRICK<small>HANGMAN</small></span></div>
     <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   </header>
   <section id="start-screen" class="screen start-screen" aria-labelledby="start-title">
     <div class="intro"><h1 id="start-title" tabindex="-1">Know your hockey?</h1><p>Choose a decade and team, then guess the player.</p></div>
-    <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">Record</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
+    <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">Scoreboard</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
     <button id="play" class="play-button" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg><span>Play</span></button>
     <div class="filters"><div class="filter"><label for="decade">Decade</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL team</label><select id="team" disabled><option>All teams</option></select></div></div>
     <p id="roster-count" class="pool-count"></p>
@@ -60,7 +60,7 @@
     <h2>Current roster</h2><p>This is a dated roster snapshot. An installed iOS app receives newer roster data with an app update.</p>
     <p>Not affiliated with the NHL or its teams.</p><button class="secondary info-back">Back to menu</button>
   </section>
-  <noscript><p>Enable JavaScript to play Ice Time.</p></noscript>
+  <noscript><p>Enable JavaScript to play Hat Trick Hangman.</p></noscript>
 </main>
 <dialog id="leave"><h2>Leave this round?</h2><p>Your guesses will be cleared and this round will count as a loss.</p><form method="dialog" class="leave-actions"><button class="secondary" value="stay" autofocus>Keep playing</button><button class="primary" value="leave">Change options</button></form></dialog>
 </body>

@@ -1,4 +1,4 @@
-# Ice Time — Hockey Hangman
+# Hat Trick Hangman
 Mobile-first NHL hangman with first and last names, six misses, and a once-per-round bonus miss for three correct letters in a row.
 
 ## NHL records and filters

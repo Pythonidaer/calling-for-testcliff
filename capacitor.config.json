@@ -1,6 +1,6 @@
 {
   "appId": "com.pythonidaer.icetime",
-  "appName": "Ice Time",
+  "appName": "Hat Trick Hangman",
   "webDir": "dist",
   "ios": {
     "backgroundColor": "#f4f0e6"

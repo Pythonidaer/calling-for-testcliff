@@ -1,4 +1,4 @@
-# Run Ice Time in an iPhone simulator on your Mac
+# Run Hat Trick Hangman in an iPhone simulator on your Mac
 
 This is a local testing setup. It does not upload to Apple, publish the game, or require banking information. The iOS app uses the existing HTML/CSS/JavaScript through Capacitor, not React Native or Expo.
 
@@ -34,7 +34,7 @@ If you already have this repository on your Mac, save any local work first, then
 2. Select the **App** scheme in the top toolbar.
 3. Select an **iPhone simulator** beside it, rather than “Any iOS Device” or your physical phone.
 4. Click the **triangle Play button**, or press **Command + R**.
-5. The simulator launches and opens Ice Time.
+5. The simulator launches and opens Hat Trick Hangman.
 
 If no iPhone is listed, install an iOS runtime in Xcode Settings and create a simulator in **Window > Devices and Simulators > Simulators > +**.
 

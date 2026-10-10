@@ -24,6 +24,12 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   for(const [selector,ratio] of contrasts)assert(ratio>=4.5,selector+' contrast '+ratio);
   console.log(engine.name()+': label contrast ratios',contrasts);
   assert(await page.locator('#play').evaluate(el=>getComputedStyle(el).borderRadius==='50%'&&el.getBoundingClientRect().width>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
+  for(const [width,height] of [[320,667],[390,844],[430,932]]){
+   await page.setViewportSize({width,height});
+   assert(await page.locator('#play').evaluate(el=>{const button=el.getBoundingClientRect(),board=document.querySelector('.scoreboard').getBoundingClientRect(),filters=document.querySelector('.filters').getBoundingClientRect();return Math.abs((button.top-board.bottom)-(filters.top-button.bottom))<1;}),'Unequal space around Play '+width+'x'+height);
+  }
+  await page.setViewportSize({width:390,height:844});
+  assert(await page.locator('#play').evaluate(el=>el.querySelector('svg').getBoundingClientRect().width===44&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===14));
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
   await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().getAttribute('id'),'open-rules');assert(await page.locator('#reset').evaluate(el=>el.getBoundingClientRect().top-document.querySelector('.menu-list').getBoundingClientRect().bottom>=60));await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
   await page.getByRole('button',{name:'Play',exact:true}).click();
@@ -49,7 +55,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   await page.getByRole('button',{name:'Play',exact:true}).click();await page.getByRole('button',{name:'Guess A',exact:true}).click();
   await page.getByRole('button',{name:'Give up & reveal'}).click();assert(await page.locator('#result-screen').isVisible());
   assert.equal(await page.locator('#result-title').innerText(),'Game Over');
-  assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>getComputedStyle(el).borderRadius==='50%'));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
+  assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>getComputedStyle(el).borderRadius==='50%'&&el.querySelector('svg').getBoundingClientRect().width===44&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===14));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
   assert.equal(await page.locator('#reveal-title').count(),0);assert.equal(await page.locator('#reveal-context').count(),0);assert(await page.locator('#result-screen').evaluate(el=>{const heading=el.querySelector('h1').getBoundingClientRect(),button=el.querySelector('#next').getBoundingClientRect(),r=el.getBoundingClientRect();return Math.abs((heading.top+button.bottom-r.top-r.bottom)/2)<5;}));
   const loss=await page.locator('#reveal-details').innerText();assert(loss.includes('Quebec Nordiques')&&!loss.includes('Colorado Avalanche'));
   await page.getByRole('button',{name:'Play again'}).click();assert(await page.locator('#game-screen').isVisible());assert(!(await page.locator('#result-screen').isVisible()));

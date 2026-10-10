@@ -1,5 +1,5 @@
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=balanced-layout-1';
-import {createGame,guess,bodyParts} from './game.js?v=balanced-layout-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=play-balance-1';
+import {createGame,guess,bodyParts} from './game.js?v=play-balance-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};

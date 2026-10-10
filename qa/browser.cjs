@@ -10,10 +10,11 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
  for(const engine of [chromium,webkit]){
   const browser=await engine.launch({headless:true});
   const page=await browser.newPage({viewport:{width:390,height:844}});
+  await page.emulateMedia({reducedMotion:'reduce'});
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto(url);await page.waitForFunction(()=>!document.getElementById('decade').disabled);
   assert(await page.locator('#start-screen').isVisible());assert(!(await page.locator('#game-screen').isVisible()));
-  assert.equal(await page.locator('#sound').count(),0);assert(await page.locator('.brand').evaluate(el=>Math.abs(el.querySelector('.brand-title').getBoundingClientRect().width-el.querySelector('small').getBoundingClientRect().width)<1));assert(await page.locator('#play').evaluate(el=>el.querySelector('span').getBoundingClientRect().bottom<=el.querySelector('svg').getBoundingClientRect().top));
+  assert.equal(await page.locator('#sound').count(),0);assert(await page.locator('.brand').evaluate(el=>Math.abs(el.querySelector('.brand-title').getBoundingClientRect().width-el.querySelector('small').getBoundingClientRect().width)<1));assert(await page.locator('#play').evaluate(el=>{const r=el.getBoundingClientRect(),icon=el.querySelector('svg').getBoundingClientRect(),label=el.querySelector('span').getBoundingClientRect();return Math.abs((r.top+r.bottom-icon.top-icon.bottom)/2)<1&&Math.abs((r.left+r.right-icon.left-icon.right)/2)<1&&label.top>=icon.bottom;}));
   // Check the rendered colors of the small labels and scoreboard, not screenshot pixels.
   const contrasts=await page.evaluate(()=>{
    const rgb=c=>c.match(/[\d.]+/g).slice(0,3).map(Number);
@@ -24,7 +25,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   console.log(engine.name()+': label contrast ratios',contrasts);
   assert(await page.locator('#play').evaluate(el=>getComputedStyle(el).borderRadius==='50%'&&el.getBoundingClientRect().width>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
-  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().getAttribute('id'),'open-rules');await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().getAttribute('id'),'open-rules');assert(await page.locator('#reset').evaluate(el=>el.getBoundingClientRect().top-document.querySelector('.menu-list').getBoundingClientRect().bottom>=60));await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
   await page.getByRole('button',{name:'Play',exact:true}).click();
   for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
    await page.setViewportSize({width,height});
@@ -49,14 +50,20 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   await page.getByRole('button',{name:'Give up & reveal'}).click();assert(await page.locator('#result-screen').isVisible());
   assert.equal(await page.locator('#result-title').innerText(),'Game Over');
   assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>getComputedStyle(el).borderRadius==='50%'));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
-  assert.equal(await page.locator('#reveal-title').count(),0);assert.equal(await page.locator('#reveal-context').count(),0);assert(await page.locator('#next').evaluate(el=>{const r=el.getBoundingClientRect(),answer=document.querySelector('#reveal').getBoundingClientRect();return Math.abs((r.top+r.bottom)/2-(answer.bottom+innerHeight-16)/2)<5;}));
+  assert.equal(await page.locator('#reveal-title').count(),0);assert.equal(await page.locator('#reveal-context').count(),0);assert(await page.locator('#result-screen').evaluate(el=>{const heading=el.querySelector('h1').getBoundingClientRect(),button=el.querySelector('#next').getBoundingClientRect(),r=el.getBoundingClientRect();return Math.abs((heading.top+button.bottom-r.top-r.bottom)/2)<5;}));
   const loss=await page.locator('#reveal-details').innerText();assert(loss.includes('Quebec Nordiques')&&!loss.includes('Colorado Avalanche'));
   await page.getByRole('button',{name:'Play again'}).click();assert(await page.locator('#game-screen').isVisible());assert(!(await page.locator('#result-screen').isVisible()));
   await page.getByRole('button',{name:'Exit to Home Screen'}).click();
   await page.evaluate(()=>{Math.random=()=>0});await page.locator('#decade').selectOption('current');await page.locator('#team').selectOption({label:'Boston Bruins'});
   const teamId=Object.keys(data.teams).find(id=>data.teams[id].name==='Boston Bruins');const player=data.players[playerPool(data,'current',teamId)[0]];
   await page.getByRole('button',{name:'Play',exact:true}).click();
-  for(const letter of new Set(normalize(player).replace(/[^A-Z]/g,'')))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();
+  const winningLetters=[...new Set(normalize(player).replace(/[^A-Z]/g,''))];
+  const beforeBonus=await page.locator('.rink').boundingBox();const keysBeforeBonus=await page.locator('#keyboard').boundingBox();
+  for(const letter of winningLetters.slice(0,3))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();
+  assert.equal(await page.locator('#bonus').innerText(),'Bonus earned: +1 miss');assert.equal(await page.locator('#message').count(),0);
+  const afterBonus=await page.locator('.rink').boundingBox();const keysAfterBonus=await page.locator('#keyboard').boundingBox();
+  assert(Math.abs(beforeBonus.height-afterBonus.height)<1&&Math.abs(keysBeforeBonus.y-keysAfterBonus.y)<1,'Bonus shifts the layout');
+  for(const letter of winningLetters.slice(3))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();
   assert(await page.locator('#result-screen').isVisible());assert.equal(await page.locator('#result-title').innerText(),'Goal!');
   const result=await page.locator('#reveal-details').innerText();assert(result.includes('Boston Bruins')&&/(Center|Left wing|Right wing|Defenseman|Goalie)/.test(result));
   await page.screenshot({path:engine.name()+'-result-preview.png',fullPage:true});

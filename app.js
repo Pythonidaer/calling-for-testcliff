@@ -1,5 +1,5 @@
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=home-exit-1';
-import {createGame,guess,bodyParts} from './game.js?v=home-exit-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=balanced-layout-1';
+import {createGame,guess,bodyParts} from './game.js?v=balanced-layout-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -19,13 +19,12 @@ function next(){if(!dataset)return;if(!bag.length)refill();lastName=bag.pop();pl
 function settle(){if(settled||game.status==='playing')return;settled=true;if(game.status==='won'){stats.wins++;stats.streak++;stats.best=Math.max(stats.best,stats.streak);}else stats.streak=0;save();renderStats();}
 function renderName(){const name=$('name');name.replaceChildren();for(const word of game.name.split(' ')){const group=document.createElement('div');group.className='word';group.style.setProperty('--letter-count',word.length);for(const character of word){const letter=document.createElement('span');const alphabetical=/[A-Z]/.test(character);letter.className='letter'+(!alphabetical?' punctuation':'');letter.textContent=!alphabetical||game.guessed.includes(character)?character:'';letter.setAttribute('aria-label',letter.textContent||'Blank letter');group.append(letter);}name.append(group);}}
 function renderGame(){
- $('round').textContent=`FACEOFF ${String(round).padStart(2,'0')}`;
+ $('round').textContent=`ROUND ${String(round).padStart(2,'0')}`;
  $('chances').textContent=`${6+Number(game.bonus)-game.misses} MISSES LEFT`;
- $('bonus').textContent=game.bonus?'Bonus earned':`Hat trick: ${Math.min(3,game.run)} / 3`;
+ $('bonus').textContent=game.bonus?'Bonus earned: +1 miss':`Hat trick: ${Math.min(3,game.run)} / 3`;
  renderName();
  const parts=bodyParts(game);document.querySelectorAll('[data-part]').forEach(el=>el.classList.toggle('shown',Number(el.dataset.part)<=parts));$('drawing').setAttribute('aria-label',`Gallows with ${parts} of 6 body parts`);
  document.querySelectorAll('.key').forEach(el=>{const used=game.guessed.includes(el.textContent);el.disabled=used||game.status!=='playing';el.className='key'+(used?(game.name.includes(el.textContent)?' hit':' miss'):'');});
- $('message').textContent=game.bonus?'Bonus earned: one extra miss.':'';
  if(game.status!=='playing'){settle();renderResult();showScreen('result');}
 }
 function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'Goal!':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
@@ -41,7 +40,7 @@ $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?'))
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
 document.addEventListener('keydown',event=>{if(screen!=='game'||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
 async function load(){
- $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>Play</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
+ $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>Play</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
  try{
   const response=await fetch('./data/rosters.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.positions?.current||!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');

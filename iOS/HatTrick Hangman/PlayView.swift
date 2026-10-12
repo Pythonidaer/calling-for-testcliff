@@ -27,14 +27,11 @@ struct PlayView: View {
     var body: some View {
         Group {
             if let round = Binding($round) {
-                HangmanView(game: round.game)
-                    // Covers the finished round's keyboard rather than taking
-                    // space, so the drawing and answer stay where they were.
-                    .overlay(alignment: .bottom) {
-                        if round.wrappedValue.game.status != .playing {
-                            result(for: round.wrappedValue)
-                        }
-                    }
+                // The result appears over the keyboard, on its screen when
+                // the round is split across two.
+                HangmanView(game: round.game) { _ in
+                    result(for: round.wrappedValue)
+                }
             } else {
                 ProgressView()
                     .frame(maxHeight: .infinity)

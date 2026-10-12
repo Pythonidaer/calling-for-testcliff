@@ -101,7 +101,7 @@ import Testing
         let old = game(answer, before)
         var new = old
         new.guess(letter)
-        return HangmanView.feedback(from: old, to: new)
+        return HangmanView<EmptyView>.feedback(from: old, to: new)
     }
 
     @Test func hitsAndMissesTapWithDifferentWeights() {
@@ -119,11 +119,11 @@ import Testing
         let old = game("Bobby Orr", "B")
         var new = old
         new.giveUp()
-        #expect(HangmanView.feedback(from: old, to: new) == .error)
+        #expect(HangmanView<EmptyView>.feedback(from: old, to: new) == .error)
     }
 
     @Test func repeatGuessesAndNewRoundsAreSilent() {
         #expect(feedback("Bobby Orr", from: "B", guess: "B") == nil)
-        #expect(HangmanView.feedback(from: game("Bobby Orr", "BZ"), to: HangmanGame(answer: "Al MacInnis")) == nil)
+        #expect(HangmanView<EmptyView>.feedback(from: game("Bobby Orr", "BZ"), to: HangmanGame(answer: "Al MacInnis")) == nil)
     }
 }

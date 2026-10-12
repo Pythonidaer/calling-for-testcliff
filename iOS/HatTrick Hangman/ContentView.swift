@@ -8,21 +8,20 @@ struct ContentView: View {
     @Query private var snapshots: [RosterSnapshot]
 
     var body: some View {
-        if let snapshot = snapshots.first {
+        if !snapshots.isEmpty {
             // A stored roster stays playable; background refreshes only add a note.
-            VStack(spacing: 12) {
-                Text("Roster updated \(snapshot.snapshotDate)")
-                if rosterLoader.phase == .refreshing {
-                    Label {
-                        Text("Updating roster…")
-                    } icon: {
-                        ProgressView()
+            PlayView()
+                .safeAreaInset(edge: .top) {
+                    if rosterLoader.phase == .refreshing {
+                        Label {
+                            Text("Updating roster…")
+                        } icon: {
+                            ProgressView()
+                        }
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                     }
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
                 }
-            }
-            .padding()
         } else if case .failed(let offline) = rosterLoader.phase {
             ContentUnavailableView {
                 Label("Couldn’t Load Rosters", systemImage: offline ? "wifi.slash" : "exclamationmark.triangle")

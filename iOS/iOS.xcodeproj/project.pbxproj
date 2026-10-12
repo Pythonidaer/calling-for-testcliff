@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3EBC771D307D223400614C7C /* RosterParser in Frameworks */ = {isa = PBXBuildFile; productRef = 3EBC771C307D223400614C7C /* RosterParser */; };
+		3EBC7720307D223400614C7C /* Hangman in Frameworks */ = {isa = PBXBuildFile; productRef = 3EBC771F307D223400614C7C /* Hangman */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				3EBC771D307D223400614C7C /* RosterParser in Frameworks */,
+				3EBC7720307D223400614C7C /* Hangman in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -67,6 +69,7 @@
 			name = "HatTrick Hangman";
 			packageProductDependencies = (
 				3EBC771C307D223400614C7C /* RosterParser */,
+				3EBC771F307D223400614C7C /* Hangman */,
 			);
 			productName = MyApp;
 			productReference = 000000000000000000000120 /* HatTrick Hangman.app */;
@@ -98,6 +101,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3EBC771B307D223400614C7C /* XCLocalSwiftPackageReference "../RosterParser" */,
+				3EBC771E307D223400614C7C /* XCLocalSwiftPackageReference "../Hangman" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -372,12 +376,20 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../RosterParser;
 		};
+		3EBC771E307D223400614C7C /* XCLocalSwiftPackageReference "../Hangman" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Hangman;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		3EBC771C307D223400614C7C /* RosterParser */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RosterParser;
+		};
+		3EBC771F307D223400614C7C /* Hangman */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Hangman;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

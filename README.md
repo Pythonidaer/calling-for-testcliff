@@ -19,10 +19,5 @@ Official NHL services: https://api.nhle.com/stats/rest/en/team, https://api.nhle
 
 Not affiliated with the NHL or its teams. No league logos or player images.
 
-## iOS simulator preparation
-The iOS app uses Capacitor to bundle this same game and NHL snapshot locally. Sound and the speaker button have been removed for now. See [IOS_SETUP.md](IOS_SETUP.md) for Mac prerequisites, simulator instructions, and a testing checklist.
-
-`npm run ios:setup` builds the web assets and creates the native project if needed. `npm run ios:open` rebuilds, syncs, and opens Xcode. No Apple upload or publication is part of these commands. Bundled current rosters reflect the snapshot at build time; a website data refresh does not update an installed native app.
-
 ## Mobile screen flow
 Start: choose a decade/team, see saved scores, then tap Play. Options are remembered on this device. Game: only the round, rink, player name, alphabet buttons and give-up action. Result: reveal the player and their team/position, then Play again. The menu starts with How to play and includes Exit to Home Screen and Roster information. Exiting to Home clears an unfinished round without recording a loss. Opening the menu preserves the round. Compact phones use six keyboard columns instead of seven. The name and keyboard stay together on ordinary portrait screens; short screens and larger text may scroll rather than clip controls.

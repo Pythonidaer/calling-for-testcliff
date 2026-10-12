@@ -2,3 +2,5 @@ node_modules/
 *-preview.png
 .DS_Store
 xcuserdata/
+.build/
+.swiftpm/

@@ -41,9 +41,7 @@ public struct HangmanView: View {
             game.guess(letter)
             return .handled
         }
-        .sensoryFeedback(trigger: game) { old, new in
-            Self.feedback(from: old, to: new)
-        }
+        .modifier(GuessFeedback(game: game))
     }
 
     /// The drawing in a rounded frame, with misses left along the top and the
@@ -80,6 +78,7 @@ public struct HangmanView: View {
     /// Haptics for a change to the game: a light tap for a correct letter, a
     /// heavier one for a miss, success for the bonus or a win, and error for a
     /// loss, including giving up. Nothing plays when a new round starts.
+    @available(visionOS 26.0, *)
     static func feedback(from old: HangmanGame, to new: HangmanGame) -> SensoryFeedback? {
         guard old.answer == new.answer else { return nil }
         if old.status == .playing, new.status == .won { return .success }
@@ -87,6 +86,22 @@ public struct HangmanView: View {
         if !old.bonusEarned, new.bonusEarned { return .success }
         guard new.guessed.count > old.guessed.count, let letter = new.guessed.last else { return nil }
         return new.state(of: letter) == .hit ? .impact(weight: .light) : .impact(weight: .heavy)
+    }
+}
+
+/// Plays `HangmanView.feedback` haptics. Earlier visionOS releases have no
+/// sensory feedback API, and Vision Pro has no haptics to play anyway.
+private struct GuessFeedback: ViewModifier {
+    var game: HangmanGame
+
+    func body(content: Content) -> some View {
+        if #available(visionOS 26.0, *) {
+            content.sensoryFeedback(trigger: game) { old, new in
+                HangmanView.feedback(from: old, to: new)
+            }
+        } else {
+            content
+        }
     }
 }
 

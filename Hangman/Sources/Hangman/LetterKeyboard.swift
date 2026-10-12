@@ -35,13 +35,26 @@ struct LetterKeyboard: View {
     }
 }
 
-/// Glass keys on OS 26 and later, with correct letters prominent in the tint.
-/// Earlier systems get outlined keys filled with the tint once correct.
+/// Glass keys on iOS and macOS 26 and later, with correct letters prominent in
+/// the tint. visionOS has no glass button styles (its windows are already
+/// glass), so it uses bordered keys. Earlier systems get outlined keys filled
+/// with the tint once correct.
 private struct KeyStyle: ViewModifier {
     var state: HangmanGame.LetterState
 
     func body(content: Content) -> some View {
-        if #available(iOS 26.0, macOS 26.0, visionOS 26.0, *) {
+        #if os(visionOS)
+        Group {
+            if state == .hit {
+                content.buttonStyle(.borderedProminent)
+            } else {
+                content.buttonStyle(.bordered)
+            }
+        }
+        .buttonBorderShape(.roundedRectangle(radius: 10))
+        .opacity(state == .miss ? 0.35 : 1)
+        #else
+        if #available(iOS 26.0, macOS 26.0, *) {
             Group {
                 if state == .hit {
                     content.buttonStyle(.glassProminent)
@@ -56,6 +69,7 @@ private struct KeyStyle: ViewModifier {
         } else {
             content.buttonStyle(OutlinedKeyStyle(state: state))
         }
+        #endif
     }
 }
 

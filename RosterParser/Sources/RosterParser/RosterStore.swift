@@ -50,6 +50,22 @@ import SwiftData
         return .updated(try replace(with: file, etag: http?.value(forHTTPHeaderField: "ETag")))
     }
 
+    /// An in-memory index of the stored roster for filters and player picks,
+    /// or `nil` before the first import.
+    public func index() throws -> RosterIndex? {
+        guard let snapshot = try currentSnapshot() else { return nil }
+        let teams = try modelContext.fetch(FetchDescriptor<RosterTeam>())
+        let players = try modelContext.fetch(FetchDescriptor<RosterPlayer>())
+        let memberships = try modelContext.fetch(FetchDescriptor<RosterMembership>())
+        return RosterIndex(
+            snapshotDate: snapshot.snapshotDate,
+            teams: teams.map { ($0.id, $0.name) },
+            playerNames: Dictionary(players.map { ($0.id, $0.name) }, uniquingKeysWith: { first, _ in first }),
+            memberships: memberships.compactMap { membership in
+                membership.pool.map { ($0, membership.teamID, membership.playerID) }
+            })
+    }
+
     private func currentSnapshot() throws -> RosterSnapshot? {
         var descriptor = FetchDescriptor<RosterSnapshot>()
         descriptor.fetchLimit = 1

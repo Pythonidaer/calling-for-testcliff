@@ -10,7 +10,7 @@ struct ContentView: View {
     var body: some View {
         if !snapshots.isEmpty {
             // A stored roster stays playable; background refreshes only add a note.
-            PlayView()
+            HomeView()
                 .safeAreaInset(edge: .top) {
                     if rosterLoader.phase == .refreshing {
                         Label {
@@ -43,7 +43,7 @@ struct ContentView: View {
 
 #Preview {
     let container = try! ModelContainer(
-        for: Schema(RosterStore.models + [Scoreboard.self]),
+        for: Schema(RosterStore.models + MyApp.progressModels),
         configurations: ModelConfiguration(isStoredInMemoryOnly: true))
     ContentView()
         .modelContainer(container)

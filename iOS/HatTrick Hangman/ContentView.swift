@@ -43,7 +43,7 @@ struct ContentView: View {
 
 #Preview {
     let container = try! ModelContainer(
-        for: Schema(RosterStore.models),
+        for: Schema(RosterStore.models + [Scoreboard.self]),
         configurations: ModelConfiguration(isStoredInMemoryOnly: true))
     ContentView()
         .modelContainer(container)

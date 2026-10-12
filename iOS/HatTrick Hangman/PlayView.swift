@@ -15,21 +15,44 @@ struct PlayView: View {
     @State private var round: Round?
 
     var body: some View {
-        Group {
+        VStack(spacing: 16) {
+            ScoreboardView()
             if let round = Binding($round) {
                 HangmanView(game: round.game)
-                    .safeAreaInset(edge: .bottom) {
+                    // Covers the finished round's keyboard rather than taking
+                    // space, so the drawing and answer stay where they were.
+                    .overlay(alignment: .bottom) {
                         if round.wrappedValue.game.status != .playing {
                             result(for: round.wrappedValue)
                         }
                     }
             } else {
                 ProgressView()
+                    .frame(maxHeight: .infinity)
             }
         }
         .padding()
         .task {
             if round == nil { nextRound() }
+        }
+        .onChange(of: round?.game.status) { old, new in
+            guard old == .playing, let new, new != .playing else { return }
+            record(won: new == .won)
+        }
+    }
+
+    /// Records a finished round once, when it leaves the playing state.
+    private func record(won: Bool) {
+        do {
+            let scoreboard = try Scoreboard.current(in: modelContext)
+            if won {
+                scoreboard.recordWin()
+            } else {
+                scoreboard.recordLoss()
+            }
+            try modelContext.save()
+        } catch {
+            print("Could not record the result: \(error)")
         }
     }
 

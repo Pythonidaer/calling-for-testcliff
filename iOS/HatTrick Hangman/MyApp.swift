@@ -10,7 +10,13 @@ import SwiftUI
 
     init() {
         do {
-            container = try ModelContainer(for: Schema(RosterStore.models))
+            // Scores live in their own store, so the roster store can be wiped
+            // and downloaded again without losing a player's stats.
+            container = try ModelContainer(
+                for: Schema(RosterStore.models + [Scoreboard.self]),
+                configurations:
+                    ModelConfiguration("Rosters", schema: Schema(RosterStore.models)),
+                    ModelConfiguration("Scores", schema: Schema([Scoreboard.self])))
         } catch {
             fatalError("Could not open the roster store: \(error)")
         }

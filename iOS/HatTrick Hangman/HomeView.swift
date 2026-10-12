@@ -3,6 +3,7 @@ import SwiftUI
 
 /// The start screen: scores and a button to play, or to resume a saved round.
 struct HomeView: View {
+    @Environment(RosterLoader.self) private var rosterLoader
     @Query private var savedRounds: [SavedRound]
     /// Restores the game screen when the system relaunches the app mid-round.
     @SceneStorage("isPlaying") private var isPlaying = false
@@ -22,7 +23,21 @@ struct HomeView: View {
                 }
                 .multilineTextAlignment(.center)
 
-                ScoreboardView()
+                VStack(spacing: 8) {
+                    ScoreboardView()
+                    // Always laid out and only faded, so a refresh starting or
+                    // finishing doesn't shift the screen.
+                    Label {
+                        Text("Updating roster…")
+                    } icon: {
+                        ProgressView()
+                    }
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .opacity(rosterLoader.phase == .refreshing ? 1 : 0)
+                    .animation(.default, value: rosterLoader.phase)
+                    .accessibilityHidden(rosterLoader.phase != .refreshing)
+                }
 
                 Spacer()
 

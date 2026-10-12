@@ -9,19 +9,8 @@ struct ContentView: View {
 
     var body: some View {
         if !snapshots.isEmpty {
-            // A stored roster stays playable; background refreshes only add a note.
+            // A stored roster stays playable; Home notes background refreshes.
             HomeView()
-                .safeAreaInset(edge: .top) {
-                    if rosterLoader.phase == .refreshing {
-                        Label {
-                            Text("Updating roster…")
-                        } icon: {
-                            ProgressView()
-                        }
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                    }
-                }
         } else if case .failed(let offline) = rosterLoader.phase {
             ContentUnavailableView {
                 Label("Couldn’t Load Rosters", systemImage: offline ? "wifi.slash" : "exclamationmark.triangle")

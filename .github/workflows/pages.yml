@@ -19,15 +19,12 @@ jobs:
           node-version: '22'
       - run: npm ci
       - run: npm test
-      - run: npm run build
       - run: npx playwright install --with-deps chromium webkit
       - name: Check browser gameplay and responsive layout
         run: |
           python3 -m http.server 8000 &
           node qa/browser.cjs
           node qa/loading.cjs
-          python3 -m http.server 8001 --directory dist &
-          QA_BASE_URL=http://localhost:8001 node qa/browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

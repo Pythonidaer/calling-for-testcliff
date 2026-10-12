@@ -42,6 +42,9 @@ struct HomeView: View {
                 Spacer()
 
                 VStack(spacing: 8) {
+                    FiltersView()
+                        .padding(.bottom, 8)
+
                     Button {
                         isPlaying = true
                     } label: {

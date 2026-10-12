@@ -18,6 +18,9 @@ struct PlayView: View {
 
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
+    @Environment(RosterLoader.self) private var rosterLoader
+    @AppStorage(FilterKeys.decade) private var decade = FilterKeys.all
+    @AppStorage(FilterKeys.team) private var team = FilterKeys.all
     @State private var round: Round?
     @State private var confirmingExit = false
 
@@ -53,7 +56,8 @@ struct PlayView: View {
         } message: {
             Text("Discarding the round doesn’t count as a loss.")
         }
-        .task {
+        // Runs again once the roster index loads, in case Play was tapped first.
+        .task(id: rosterLoader.index == nil) {
             if round == nil { resumeOrStartRound() }
         }
         .onChange(of: round?.game) { old, new in
@@ -103,19 +107,18 @@ struct PlayView: View {
         }
     }
 
+    /// Starts a round with a random player matching the Home filters, avoiding
+    /// the player just played when there's anyone else to pick.
     private func startRound() {
-        do {
-            let count = try modelContext.fetchCount(FetchDescriptor<RosterPlayer>())
-            guard count > 0 else { return }
-            var descriptor = FetchDescriptor<RosterPlayer>()
-            descriptor.fetchOffset = Int.random(in: 0..<count)
-            descriptor.fetchLimit = 1
-            guard let player = try modelContext.fetch(descriptor).first else { return }
-            withAnimation {
-                round = Round(playerID: player.id, playerName: player.name, game: HangmanGame(answer: player.name))
-            }
-        } catch {
-            print("Could not pick a player: \(error)")
+        guard let index = rosterLoader.index else { return }
+        let pool = index.pool(forDecadeKey: decade)
+        var candidates = index.playerIDs(in: pool, team: index.team(forKey: team, in: pool))
+        if candidates.count > 1, let previous = round?.playerID {
+            candidates.remove(previous)
+        }
+        guard let playerID = candidates.randomElement(), let name = index.name(of: playerID) else { return }
+        withAnimation {
+            round = Round(playerID: playerID, playerName: name, game: HangmanGame(answer: name))
         }
     }
 

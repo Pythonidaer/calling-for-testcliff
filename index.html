@@ -1,11 +1,71 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#102b33"><meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time."><title>Ice Time — Hockey Hangman</title><link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="styles.css?v=stadium-audio-2"><script type="module" src="bootstrap.js?v=stadium-audio-2"></script></head>
-<body><main class="shell"><header><a class="brand" href="./" aria-label="Ice Time home"><span class="logo">✦</span><span>ICE TIME<small>HOCKEY HANGMAN</small></span></a><div class="header-actions"><button id="sound" class="icon-button" aria-label="Turn sound on" aria-pressed="false" title="Sound off"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><g class="sound-waves" hidden><path d="M16 8a6 6 0 010 8M19 5a10 10 0 010 14"/></g><path class="sound-slash" d="M17 9l5 6M22 9l-5 6"/></svg></button><button id="help" class="icon-button" aria-label="How to play">?</button></div></header>
-<section class="intro"><span class="eyebrow">THE NAME. THE LEGEND. THE GAME.</span><h1>Know your hockey?</h1><p>A century of NHL names. Pick a decade and a team.</p></section>
-<div class="scoreboard" aria-label="Your scores"><div><span>WINS</span><strong id="wins">00</strong></div><div><span>STREAK</span><strong id="streak">00</strong></div><div><span>BEST</span><strong id="best">00</strong></div></div>
-<div class="filters"><div class="filter"><label for="decade">DECADE</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL TEAM</label><select id="team" disabled><option>All teams</option></select></div></div>
-<section class="rink" aria-label="Hangman rink"><div class="rink-circle"></div><div class="rink-line"></div><div class="rink-top"><span id="round">FACEOFF 01</span><span id="chances">6 MISSES LEFT</span></div><svg viewBox="0 0 300 210" role="img" id="drawing" aria-label="Gallows with no body parts"><g fill="none" stroke="#173d45" stroke-width="7" stroke-linecap="square"><path d="M42 184H193M65 184V25H181M65 55L96 25"/><path class="rope" d="M181 25V53"/><circle data-part="1" cx="181" cy="70" r="17"/><path data-part="2" d="M181 87V134"/><path data-part="3" d="M181 98L151 118"/><path data-part="4" d="M181 98L211 118"/><path data-part="5" d="M181 134L156 168"/><path data-part="6" d="M181 134L206 168"/></g><g fill="#173d45"><rect x="225" y="178" width="30" height="8" rx="4"/><path d="M228 177L249 123L254 125L235 177Z"/></g></svg><div class="rink-bottom"><span>FIRST + LAST NAME</span><span id="bonus">✦ HAT TRICK: 0 / 3</span></div></section>
-<section class="guess-area" aria-label="Player name"><div id="name" class="name"></div><p id="message" role="status" aria-live="polite">Loading NHL records…</p><section id="reveal" class="reveal" hidden aria-labelledby="reveal-title"><h2 id="reveal-title">THE PLAYER CARD</h2><p id="reveal-context"></p><dl id="reveal-details"></dl></section></section>
-<div id="keyboard" class="keyboard" aria-label="Letter keyboard"><div class="key-row"><button class="key" aria-label="Guess Q" disabled>Q</button><button class="key" aria-label="Guess W" disabled>W</button><button class="key" aria-label="Guess E" disabled>E</button><button class="key" aria-label="Guess R" disabled>R</button><button class="key" aria-label="Guess T" disabled>T</button><button class="key" aria-label="Guess Y" disabled>Y</button><button class="key" aria-label="Guess U" disabled>U</button><button class="key" aria-label="Guess I" disabled>I</button><button class="key" aria-label="Guess O" disabled>O</button><button class="key" aria-label="Guess P" disabled>P</button></div><div class="key-row"><button class="key" aria-label="Guess A" disabled>A</button><button class="key" aria-label="Guess S" disabled>S</button><button class="key" aria-label="Guess D" disabled>D</button><button class="key" aria-label="Guess F" disabled>F</button><button class="key" aria-label="Guess G" disabled>G</button><button class="key" aria-label="Guess H" disabled>H</button><button class="key" aria-label="Guess J" disabled>J</button><button class="key" aria-label="Guess K" disabled>K</button><button class="key" aria-label="Guess L" disabled>L</button></div><div class="key-row"><button class="key" aria-label="Guess Z" disabled>Z</button><button class="key" aria-label="Guess X" disabled>X</button><button class="key" aria-label="Guess C" disabled>C</button><button class="key" aria-label="Guess V" disabled>V</button><button class="key" aria-label="Guess B" disabled>B</button><button class="key" aria-label="Guess N" disabled>N</button><button class="key" aria-label="Guess M" disabled>M</button></div></div><noscript><p>Enable JavaScript to play Ice Time.</p></noscript><button id="next" class="primary" hidden>Next faceoff <span>→</span></button>
-<div class="bottom"><button id="skip" class="text-button" disabled>Give up & reveal</button><span id="roster-count"></span></div><p id="data-note" class="data-note"></p><footer>NO CLOCK. JUST HOCKEY.<span>Built for the love of the game.</span></footer></main>
-<dialog id="rules"><form method="dialog"><button class="close" aria-label="Close rules">×</button></form><span class="eyebrow">THE RULEBOOK</span><h2>Six misses.<br>One hockey name.</h2><p>Guess the first and last name of a male NHL player from a U.S. or Canadian NHL team. Spaces, hyphens, and punctuation are already shown. Accents use their plain letters.</p><ol><li>Each wrong letter adds a part: head, body, two arms, two legs.</li><li>Get three correct letters in a row to earn a <b>hat-trick bonus</b>: one extra miss. Once per round.</li><li>With a bonus, your sixth miss is saved. The final leg appears on miss seven.</li></ol><p>Decades use the season’s start year: 1989–90 belongs to the 1980s. Historical pools contain players with recorded regular-season appearances for that team. Current roster is a dated NHL roster snapshot, refreshed daily; it can change. Defunct and renamed teams keep their historical names.</p><p>Tap the speaker to enable stadium sound. Misses raise the organ by a half step and increase its tempo. A win plays a trumpet charge and cheering; a loss plays a buzzer and booing. Tap again to mute.</p><p>Use the onscreen letters or your keyboard. Changing a filter starts a fresh round; giving up counts as a loss. Scores save on this device.</p><button id="reset" class="text-button">Reset saved scores</button></dialog></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f4f0e6">
+  <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
+  <title>Hat Trick Hangman</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=play-balance-1">
+  <script type="module" src="bootstrap.js?v=play-balance-1"></script>
+</head>
+<body data-screen="start">
+<main class="shell">
+  <header>
+    <button id="back" class="icon-button" aria-label="Exit to Home Screen" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+    <div class="brand"><svg class="logo" viewBox="4 5 40 28" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span class="brand-text"><span class="brand-title">HAT TRICK</span><small><span>H</span><span>A</span><span>N</span><span>G</span><span>M</span><span>A</span><span>N</span></small></span></div>
+    <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </header>
+  <section id="start-screen" class="screen start-screen" aria-labelledby="start-title">
+    <div class="intro"><h1 id="start-title" tabindex="-1">Know your hockey?</h1><p>Choose a decade and team, then guess the player.</p></div>
+    <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">SCOREBOARD</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
+    <div class="home-controls">
+    <button id="play" class="play-button" disabled><span>Play</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg></button>
+    <div class="filters"><div class="filter"><label for="decade">Decade</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL team</label><select id="team" disabled><option>All teams</option></select></div></div>
+    <p id="roster-count" class="pool-count"></p>
+
+    <p id="load-status" role="status">Loading NHL records…</p>
+    </div>
+  </section>
+  <section id="game-screen" class="screen game-screen" aria-label="Hockey hangman game" hidden>
+    <section class="rink" aria-label="Hangman rink"><div class="rink-circle"></div><div class="rink-line"></div><div class="rink-top"><span id="round" tabindex="-1">ROUND 01</span><span id="chances">6 MISSES LEFT</span></div>
+    <svg viewBox="28 12 198 188" role="img" id="drawing" aria-label="Gallows with no body parts"><g fill="none" stroke="#173d45" stroke-width="7" stroke-linecap="square"><path d="M42 184H193M65 184V25H181M65 55L96 25"/><path class="rope" d="M181 25V53"/><circle data-part="1" cx="181" cy="70" r="17"/><path data-part="2" d="M181 87V134"/><path data-part="3" d="M181 98L151 118"/><path data-part="4" d="M181 98L211 118"/><path data-part="5" d="M181 134L156 168"/><path data-part="6" d="M181 134L206 168"/></g></svg>
+    <div class="rink-bottom"><span id="bonus" role="status" aria-live="polite">Hat trick: 0 / 3</span></div></section>
+    <section class="guess-area" aria-label="Player name"><div id="name" class="name"></div></section>
+    <div id="keyboard" class="keyboard" aria-label="Letter keyboard"><button class="key" aria-label="Guess A" disabled>A</button><button class="key" aria-label="Guess B" disabled>B</button><button class="key" aria-label="Guess C" disabled>C</button><button class="key" aria-label="Guess D" disabled>D</button><button class="key" aria-label="Guess E" disabled>E</button><button class="key" aria-label="Guess F" disabled>F</button><button class="key" aria-label="Guess G" disabled>G</button><button class="key" aria-label="Guess H" disabled>H</button><button class="key" aria-label="Guess I" disabled>I</button><button class="key" aria-label="Guess J" disabled>J</button><button class="key" aria-label="Guess K" disabled>K</button><button class="key" aria-label="Guess L" disabled>L</button><button class="key" aria-label="Guess M" disabled>M</button><button class="key" aria-label="Guess N" disabled>N</button><button class="key" aria-label="Guess O" disabled>O</button><button class="key" aria-label="Guess P" disabled>P</button><button class="key" aria-label="Guess Q" disabled>Q</button><button class="key" aria-label="Guess R" disabled>R</button><button class="key" aria-label="Guess S" disabled>S</button><button class="key" aria-label="Guess T" disabled>T</button><button class="key" aria-label="Guess U" disabled>U</button><button class="key" aria-label="Guess V" disabled>V</button><button class="key" aria-label="Guess W" disabled>W</button><button class="key" aria-label="Guess X" disabled>X</button><button class="key" aria-label="Guess Y" disabled>Y</button><button class="key" aria-label="Guess Z" disabled>Z</button></div>
+    <button id="skip" class="text-button">Give up &amp; reveal</button>
+  </section>
+  <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
+    <div class="result-intro"><h1 id="result-title" tabindex="-1">Round complete</h1></div>
+    <section id="reveal" class="reveal" aria-labelledby="result-name"><p id="result-name" class="result-name"></p><dl id="reveal-details"></dl></section>
+    <div class="result-actions"><button id="next" class="play-button"><span>Play again</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg></button></div>
+  </section>
+  <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
+    <h1 id="menu-title" tabindex="-1">Menu</h1>
+    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="change-options">Exit to Home Screen <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="open-rosters">Roster information <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></nav>
+    <div class="menu-actions">
+    <button id="reset" class="text-button">Reset saved scores</button>
+    <button id="resume" class="secondary">Back to game</button>
+    </div>
+  </section>
+  <section id="rules-screen" class="screen info-screen" aria-labelledby="rules-title" hidden>
+    <h1 id="rules-title" tabindex="-1">How to play</h1>
+    <p>Guess the first and last name of an NHL player. Spaces and punctuation are shown. For accented letters, choose the letter without the accent. For example, choose E for É in José.</p>
+    <ol><li>Choose a decade and team, then press Play.</li><li>Select letters to reveal the name. Each wrong letter adds a part to the hangman: a head, a body, two arms, and two legs.</li><li>You have six misses. Three correct letters in a row earn one extra miss, once per round.</li></ol>
+    <p>Giving up counts as a loss. Exit to Home Screen clears the unfinished round without counting a loss. Closing the app does not record a loss. The unfinished round is not saved after the app restarts.</p><p>Streak counts your consecutive wins. Best streak is your longest winning streak. Scores save on this device.</p>
+    <button class="secondary info-back">Back to menu</button>
+  </section>
+  <section id="rosters-screen" class="screen info-screen" aria-labelledby="rosters-title" hidden>
+    <h1 id="rosters-title" tabindex="-1">Roster information</h1>
+    <p id="data-note"></p>
+    <h2>Historical players</h2><p>Players are included when they have a recorded regular-season appearance for the selected team. Defunct and renamed teams keep their historical names.</p>
+    <h2>Decades</h2><p>Decades use the season’s start year. For example, the 1989–90 season belongs to the 1980s.</p>
+    <h2>Current roster</h2><p>This is a dated roster snapshot. An installed iOS app receives newer roster data with an app update.</p>
+    <p>Not affiliated with the NHL or its teams.</p><button class="secondary info-back">Back to menu</button>
+  </section>
+  <noscript><p>Enable JavaScript to play Hat Trick Hangman.</p></noscript>
+</main>
+
+</body>
+</html>

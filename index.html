@@ -7,7 +7,7 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=centered-keyboard-1">
+  <link rel="stylesheet" href="styles.css?v=rink-alignment-1">
   <script type="module" src="bootstrap.js?v=play-balance-1"></script>
 </head>
 <body data-screen="start">
@@ -29,8 +29,8 @@
     </div>
   </section>
   <section id="game-screen" class="screen game-screen" aria-label="Hockey hangman game" hidden>
-    <section class="rink" aria-label="Hangman rink"><div class="rink-circle"></div><div class="rink-line"></div><div class="rink-top"><span id="round" tabindex="-1">ROUND 01</span><span id="chances">6 MISSES LEFT</span></div>
-    <svg viewBox="28 12 198 188" role="img" id="drawing" aria-label="Gallows with no body parts"><g fill="none" stroke="#173d45" stroke-width="7" stroke-linecap="square"><path d="M42 184H193M65 184V25H181M65 55L96 25"/><path class="rope" d="M181 25V53"/><circle data-part="1" cx="181" cy="70" r="17"/><path data-part="2" d="M181 87V134"/><path data-part="3" d="M181 98L151 118"/><path data-part="4" d="M181 98L211 118"/><path data-part="5" d="M181 134L156 168"/><path data-part="6" d="M181 134L206 168"/></g></svg>
+    <section class="rink" aria-label="Hangman rink"><div class="rink-line"></div><div class="rink-top"><span id="round" tabindex="-1">ROUND 01</span><span id="chances">6 MISSES LEFT</span></div>
+    <svg viewBox="28 12 198 188" role="img" id="drawing" aria-label="Gallows with no body parts"><circle class="rink-circle" cx="127" cy="106" r="56.5"/><g fill="none" stroke="#173d45" stroke-width="7" stroke-linecap="square"><path d="M42 184H139M65 184V25H127M65 55L96 25"/><path class="rope" d="M127 25V53"/><circle data-part="1" cx="127" cy="70" r="17"/><path data-part="2" d="M127 87V134"/><path data-part="3" d="M127 98L97 118"/><path data-part="4" d="M127 98L157 118"/><path data-part="5" d="M127 134L102 168"/><path data-part="6" d="M127 134L152 168"/></g></svg>
     <div class="rink-bottom"><span id="bonus" role="status" aria-live="polite">Hat trick: 0 / 3</span></div></section>
     <section class="guess-area" aria-label="Player name"><div id="name" class="name"></div></section>
     <div id="keyboard" class="keyboard" aria-label="Letter keyboard"><button class="key" aria-label="Guess A" disabled>A</button><button class="key" aria-label="Guess B" disabled>B</button><button class="key" aria-label="Guess C" disabled>C</button><button class="key" aria-label="Guess D" disabled>D</button><button class="key" aria-label="Guess E" disabled>E</button><button class="key" aria-label="Guess F" disabled>F</button><button class="key" aria-label="Guess G" disabled>G</button><button class="key" aria-label="Guess H" disabled>H</button><button class="key" aria-label="Guess I" disabled>I</button><button class="key" aria-label="Guess J" disabled>J</button><button class="key" aria-label="Guess K" disabled>K</button><button class="key" aria-label="Guess L" disabled>L</button><button class="key" aria-label="Guess M" disabled>M</button><button class="key" aria-label="Guess N" disabled>N</button><button class="key" aria-label="Guess O" disabled>O</button><button class="key" aria-label="Guess P" disabled>P</button><button class="key" aria-label="Guess Q" disabled>Q</button><button class="key" aria-label="Guess R" disabled>R</button><button class="key" aria-label="Guess S" disabled>S</button><button class="key" aria-label="Guess T" disabled>T</button><button class="key" aria-label="Guess U" disabled>U</button><button class="key" aria-label="Guess V" disabled>V</button><button class="key" aria-label="Guess W" disabled>W</button><button class="key" aria-label="Guess X" disabled>X</button><button class="key" aria-label="Guess Y" disabled>Y</button><button class="key" aria-label="Guess Z" disabled>Z</button></div>

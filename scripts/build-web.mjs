@@ -5,7 +5,7 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const output = join(root, 'dist');
 await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
-for (const asset of ['index.html', 'styles.css', 'bootstrap.js', 'app.js', 'team-accents.js', 'game.js', 'pools.js', 'icon.svg', 'data']) {
+for (const asset of ['index.html', 'styles.css', 'bootstrap.js', 'app.js', 'confetti-preview.js', 'vendor', 'team-accents.js', 'game.js', 'pools.js', 'icon.svg', 'data']) {
   await cp(join(root, asset), join(output, asset), { recursive: true });
 }
 console.log('Bundled game and roster snapshot into dist/.');

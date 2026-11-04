@@ -7,8 +7,8 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=uppercase-labels-1">
-  <script type="module" src="bootstrap.js?v=uppercase-labels-1"></script>
+  <link rel="stylesheet" href="styles.css?v=menu-actions-1">
+  <script type="module" src="bootstrap.js?v=menu-actions-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
@@ -43,10 +43,10 @@
   </section>
   <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
     <h1 id="menu-title" tabindex="-1">Menu</h1>
-    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="change-options">Exit to Home Screen <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="open-rosters">Roster information <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></nav>
+    <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="open-rosters">Roster information <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></nav>
     <div class="menu-actions">
+    <button id="exit-home" class="secondary">Exit to Home Screen</button>
     <button id="reset" class="text-button">Reset saved scores</button>
-    <button id="resume" class="secondary">Back to game</button>
     </div>
   </section>
   <section id="rules-screen" class="screen info-screen" aria-labelledby="rules-title" hidden>

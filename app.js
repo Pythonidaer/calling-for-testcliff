@@ -1,6 +1,6 @@
-import {teamAccents} from './team-accents.js?v=uppercase-labels-1';
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=uppercase-labels-1';
-import {createGame,guess,bodyParts} from './game.js?v=uppercase-labels-1';
+import {teamAccents} from './team-accents.js?v=menu-actions-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=menu-actions-1';
+import {createGame,guess,bodyParts} from './game.js?v=menu-actions-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -9,7 +9,7 @@ try{const saved=JSON.parse(localStorage.getItem('ice-time-stats'));if(saved)for(
 try{const saved=JSON.parse(localStorage.getItem('ice-time-options'));if(saved&&typeof saved.decade==='string'&&typeof saved.team==='string')preferences=saved;}catch{}
 function save(){try{localStorage.setItem('ice-time-stats',JSON.stringify(stats));}catch{}}
 function showScreen(value){screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Exit to Home Screen');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value+'-title');heading.focus({preventScroll:true});}
-function openMenu(){if(['menu','rules','rosters'].includes(screen)){showScreen(returnScreen);return;}returnScreen=screen;$('resume').textContent=screen==='game'?'Resume round':screen==='result'?'Back to result':'Back to start';showScreen('menu');}
+function openMenu(){if(['menu','rules','rosters'].includes(screen)){showScreen(returnScreen);return;}returnScreen=screen;showScreen('menu');}
 function renderStats(){for(const key of Object.keys(stats))$(key).textContent=String(stats[key]).padStart(2,'0');}
 function pool(){return [...new Set(playerPool(dataset,$('decade').value,$('team').value).map(id=>dataset.players[id]))];}
 function saveOptions(){preferences={decade:$('decade').value,team:$('team').value};try{localStorage.setItem('ice-time-options',JSON.stringify(preferences));}catch{}}
@@ -32,11 +32,11 @@ function renderResult(){const won=game.status==='won';$('result-title').textCont
 function chooseLetter(letter){if(screen!=='game'||!game)return;const previous=game;game=guess(game,letter);if(game!==previous)renderGame();}
 function exitHome(){game=undefined;showScreen('start');}
 function goBack(){if(['rules','rosters'].includes(screen)){showScreen('menu');return;}if(screen==='menu'){showScreen(returnScreen);return;}exitHome();}
-$('back').onclick=goBack;$('change-options').onclick=exitHome;
+$('back').onclick=goBack;
 $('play').onclick=next;$('next').onclick=next;
 $('skip').onclick=()=>{game={...game,status:'lost',misses:6+Number(game.bonus)};renderGame();};
 $('decade').onchange=()=>{teamOptions();updateOptions();};$('team').onchange=updateOptions;
-$('menu-toggle').onclick=openMenu;$('resume').onclick=()=>showScreen(returnScreen);$('open-rules').onclick=()=>showScreen('rules');$('open-rosters').onclick=()=>showScreen('rosters');for(const button of document.querySelectorAll('.info-back'))button.onclick=()=>showScreen('menu');
+$('menu-toggle').onclick=openMenu;$('exit-home').onclick=exitHome;$('open-rules').onclick=()=>showScreen('rules');$('open-rosters').onclick=()=>showScreen('rosters');for(const button of document.querySelectorAll('.info-back'))button.onclick=()=>showScreen('menu');
 $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?')){stats={wins:0,streak:0,best:0};save();renderStats();}};
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
 document.addEventListener('keydown',event=>{if(screen!=='game'||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});

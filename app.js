@@ -1,6 +1,6 @@
-import {teamAccents} from './team-accents.js?v=team-accents-1';
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=team-accents-1';
-import {createGame,guess,bodyParts} from './game.js?v=team-accents-1';
+import {teamAccents} from './team-accents.js?v=uppercase-labels-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=uppercase-labels-1';
+import {createGame,guess,bodyParts} from './game.js?v=uppercase-labels-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -28,7 +28,7 @@ function renderGame(){
  document.querySelectorAll('.key').forEach(el=>{const used=game.guessed.includes(el.textContent);el.disabled=used||game.status!=='playing';el.className='key'+(used?(game.name.includes(el.textContent)?' hit':' miss'):'');});
  if(game.status!=='playing'){settle();renderResult();showScreen('result');}
 }
-function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'Goal!':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
+function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'GOAL':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
 function chooseLetter(letter){if(screen!=='game'||!game)return;const previous=game;game=guess(game,letter);if(game!==previous)renderGame();}
 function exitHome(){game=undefined;showScreen('start');}
 function goBack(){if(['rules','rosters'].includes(screen)){showScreen('menu');return;}if(screen==='menu'){showScreen(returnScreen);return;}exitHome();}
@@ -41,7 +41,7 @@ $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?'))
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
 document.addEventListener('keydown',event=>{if(screen!=='game'||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
 async function load(){
- $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>Play</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
+ $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>PLAY</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
  try{
   const response=await fetch('./data/rosters.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.positions?.current||!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');

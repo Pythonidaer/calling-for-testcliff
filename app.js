@@ -1,6 +1,6 @@
-import {teamAccents} from './team-accents.js?v=menu-actions-1';
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=menu-actions-1';
-import {createGame,guess,bodyParts} from './game.js?v=menu-actions-1';
+import {teamAccents} from './team-accents.js?v=bonus-copy-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=bonus-copy-1';
+import {createGame,guess,bodyParts} from './game.js?v=bonus-copy-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -22,7 +22,7 @@ function renderName(){const name=$('name');name.replaceChildren();for(const word
 function renderGame(){
  $('round').textContent=`ROUND ${String(round).padStart(2,'0')}`;
  $('chances').textContent=`${6+Number(game.bonus)-game.misses} MISSES LEFT`;
- $('bonus').textContent=game.bonus?'Bonus earned: +1 miss':`Hat trick: ${Math.min(3,game.run)} / 3`;
+ $('bonus').textContent=game.bonus?'Extra guess earned':`Hat trick: ${Math.min(3,game.run)} / 3`;
  renderName();
  const parts=bodyParts(game);document.querySelectorAll('[data-part]').forEach(el=>el.classList.toggle('shown',Number(el.dataset.part)<=parts));$('drawing').setAttribute('aria-label',`Gallows with ${parts} of 6 body parts`);
  document.querySelectorAll('.key').forEach(el=>{const used=game.guessed.includes(el.textContent);el.disabled=used||game.status!=='playing';el.className='key'+(used?(game.name.includes(el.textContent)?' hit':' miss'):'');});

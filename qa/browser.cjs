@@ -76,7 +76,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   const winningLetters=[...new Set(normalize(player).replace(/[^A-Z]/g,''))];
   const beforeBonus=await page.locator('.rink').boundingBox();const keysBeforeBonus=await page.locator('#keyboard').boundingBox();
   for(const letter of winningLetters.slice(0,3))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();
-  assert.equal(await page.locator('#bonus').innerText(),'Bonus earned: +1 miss');assert.equal(await page.locator('#message').count(),0);
+  assert.equal(await page.locator('#bonus').innerText(),'Extra guess earned');assert.equal(await page.locator('#message').count(),0);
   const afterBonus=await page.locator('.rink').boundingBox();const keysAfterBonus=await page.locator('#keyboard').boundingBox();
   assert(Math.abs(beforeBonus.height-afterBonus.height)<1&&Math.abs(keysBeforeBonus.y-keysAfterBonus.y)<1,'Bonus shifts the layout');
   for(const letter of winningLetters.slice(3))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();

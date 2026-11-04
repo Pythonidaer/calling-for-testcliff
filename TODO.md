@@ -18,7 +18,7 @@ Checked items have been implemented. The current How to play changes are ready f
 - [ ] Explore a full scoreboard palette and the hangman support bar color.
 - [ ] Add faceoff circles and a suggestion of a goal.
 - [ ] Add sounds: short boo for a miss, short applause and “yeah” for a correct guess, bigger applause and a charge sound for a win.
-- [ ] Change the bonus message to “Extra guess awarded.” Resolve whether “earned” should appear.
+- [x] Change the completed hat-trick bonus message to “Extra guess earned.”
 - [ ] Add confetti and two charge sounds for a perfect game.
 - [ ] Replace the circular Play button with a cylindrical puck labeled NEW GAME, without a triangle.
 - [ ] Increase font sizes throughout and review fit and accessibility.

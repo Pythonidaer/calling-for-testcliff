@@ -40,3 +40,6 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
 /* Stack home options and keep them closer to the bottom safe area. */
 .home-controls{margin-bottom:16px}
 .home-controls .filters{grid-template-columns:1fr;gap:20px;margin-bottom:0}
+
+/* Filled navigation actions on menu and information screens. */
+#exit-home,.info-back{background:var(--ink);color:var(--paper)}

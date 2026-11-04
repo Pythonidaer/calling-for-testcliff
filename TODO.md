@@ -21,7 +21,7 @@ Checked items are implemented or explicitly closed for this review pass. Deferre
 - [x] Change the completed hat-trick bonus message to “Extra guess earned.”
 - [x] Add Realistic Look confetti for a perfect win with zero misses. Remove the temporary test button.
 - [ ] ON HOLD — Add two charge sounds for a perfect game when client audio is ready.
-- [ ] Replace the circular Play button with a cylindrical puck labeled NEW GAME, without a triangle.
+- [x] Replace the circular play buttons with SVG cylindrical pucks, without triangles. Current review labels are PLAY and PLAY AGAIN, following the latest request. NEW GAME was the earlier label idea.
 - [ ] Review font sizes and accessibility for the specific text the user identifies next. Await that selection before making changes.
 
 ## Deferred rink detail

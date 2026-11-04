@@ -14,7 +14,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto(url);await page.waitForFunction(()=>!document.getElementById('decade').disabled);
   assert(await page.locator('#start-screen').isVisible());assert(!(await page.locator('#game-screen').isVisible()));
-  assert.equal(await page.locator('#sound').count(),0);assert(await page.locator('.brand').evaluate(el=>Math.abs(el.querySelector('.brand-title').getBoundingClientRect().width-el.querySelector('small').getBoundingClientRect().width)<1));assert(await page.locator('#play').evaluate(el=>{const r=el.getBoundingClientRect(),icon=el.querySelector('svg').getBoundingClientRect(),label=el.querySelector('span').getBoundingClientRect();return Math.abs((r.top+r.bottom-icon.top-icon.bottom)/2)<1&&Math.abs((r.left+r.right-icon.left-icon.right)/2)<1&&label.top>=icon.bottom;}));
+  assert.equal(await page.locator('#sound').count(),0);assert(await page.locator('.brand').evaluate(el=>Math.abs(el.querySelector('.brand-title').getBoundingClientRect().width-el.querySelector('small').getBoundingClientRect().width)<1));assert(await page.locator('#play').evaluate(el=>{const r=el.getBoundingClientRect(),label=el.querySelector('span').getBoundingClientRect();return el.querySelector('img').complete&&el.querySelector('img').naturalWidth>0&&label.top>=r.top&&label.bottom<r.top+r.height*.65;}));
   // Check the rendered colors of the small labels and scoreboard, not screenshot pixels.
   const contrasts=await page.evaluate(()=>{
    const rgb=c=>c.match(/[\d.]+/g).slice(0,3).map(Number);
@@ -23,13 +23,13 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   });
   for(const [selector,ratio] of contrasts)assert(ratio>=4.5,selector+' contrast '+ratio);
   console.log(engine.name()+': label contrast ratios',contrasts);
-  assert(await page.locator('#play').evaluate(el=>getComputedStyle(el).borderRadius==='50%'&&el.getBoundingClientRect().width>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
+  assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().width>=180&&el.getBoundingClientRect().height>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
   for(const [width,height] of [[320,667],[390,844],[430,932]]){
    await page.setViewportSize({width,height});
    assert(await page.locator('#play').evaluate(el=>{const button=el.getBoundingClientRect(),board=document.querySelector('.scoreboard').getBoundingClientRect(),filters=document.querySelector('.filters').getBoundingClientRect();return Math.abs((button.top-board.bottom)-(filters.top-button.bottom))<1;}),'Unequal space around Play '+width+'x'+height);
   }
   await page.setViewportSize({width:390,height:844});
-  assert(await page.locator('#play').evaluate(el=>el.querySelector('svg').getBoundingClientRect().width===44&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===14));
+  assert(await page.locator('#play').evaluate(el=>el.querySelector('img').getAttribute('alt')===''&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===17));
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
   await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().getAttribute('id'),'open-rules');assert.equal(await page.locator('.menu-list button').count(),2);assert.equal(await page.locator('#menu-screen').getByRole('button',{name:'Exit to Home Screen',exact:true}).count(),1);assert(await page.locator('#reset').evaluate(el=>{const r=el.getBoundingClientRect(),exit=document.querySelector('#exit-home').getBoundingClientRect();return r.top-exit.bottom>=48&&innerHeight-r.bottom>=32;}));await page.screenshot({path:engine.name()+'-menu-preview.png',fullPage:true});await page.getByRole('button',{name:'Exit to Home Screen',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
   // Team changes affect only the requested borders, and All teams restores the defaults.
@@ -66,7 +66,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   await page.getByRole('button',{name:'PLAY',exact:true}).click();assert(await page.getByRole('button',{name:'Guess A',exact:true}).isEnabled(),'New round must clear previous guesses');await page.getByRole('button',{name:'Guess A',exact:true}).click();
   await page.getByRole('button',{name:'Give up and reveal'}).click();assert(await page.locator('#result-screen').isVisible());
   assert.equal(await page.locator('#result-title').innerText(),'Game Over');
-  assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>getComputedStyle(el).borderRadius==='50%'&&el.querySelector('svg').getBoundingClientRect().width===44&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===14));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
+  assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>el.querySelector('img').getAttribute('alt')===''&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===17));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
   assert.equal(await page.locator('#reveal-title').count(),0);assert.equal(await page.locator('#reveal-context').count(),0);assert(await page.locator('#result-screen').evaluate(el=>{const heading=el.querySelector('h1').getBoundingClientRect(),button=el.querySelector('#next').getBoundingClientRect(),r=el.getBoundingClientRect();return Math.abs((heading.top+button.bottom-r.top-r.bottom)/2)<5;}));
   const loss=await page.locator('#reveal-details').innerText();assert(loss.includes('Quebec Nordiques')&&!loss.includes('Colorado Avalanche'));
   await page.getByRole('button',{name:'PLAY AGAIN'}).click();assert(await page.locator('#game-screen').isVisible());assert(!(await page.locator('#result-screen').isVisible()));

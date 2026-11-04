@@ -1,7 +1,7 @@
-import {celebratePerfectGame,stopConfetti} from './confetti-celebration.js?v=perfect-confetti-1';
-import {teamAccents} from './team-accents.js?v=perfect-confetti-1';
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=perfect-confetti-1';
-import {createGame,guess,bodyParts} from './game.js?v=perfect-confetti-1';
+import {celebratePerfectGame,stopConfetti} from './confetti-celebration.js?v=puck-button-1';
+import {teamAccents} from './team-accents.js?v=puck-button-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=puck-button-1';
+import {createGame,guess,bodyParts} from './game.js?v=puck-button-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -42,7 +42,7 @@ $('reset').onclick=()=>{if(confirm('Reset your wins, streak, and best streak?'))
 for(const key of document.querySelectorAll('.key'))key.onclick=()=>chooseLetter(key.textContent);
 document.addEventListener('keydown',event=>{if(screen!=='game'||event.ctrlKey||event.metaKey||event.altKey||event.target.matches('select,input,textarea'))return;if(/^[a-z]$/i.test(event.key))chooseLetter(event.key);});
 async function load(){
- $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>PLAY</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg>'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
+ $('play').disabled=true;$('play').classList.remove('retry');$('play').innerHTML='<span>PLAY</span><img src="puck-button.svg" alt="" draggable="false">'; $('load-status').textContent='Loading NHL records…';$('decade').disabled=true;$('team').disabled=true;
  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),15000);
  try{
   const response=await fetch('./data/rosters.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error('Roster fetch failed');dataset=await response.json();if(!dataset.positions?.current||!dataset.pools.current||!Object.keys(dataset.players).length)throw new Error('Invalid roster data');

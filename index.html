@@ -7,8 +7,8 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=perfect-confetti-1">
-  <script type="module" src="bootstrap.js?v=perfect-confetti-1"></script>
+  <link rel="stylesheet" href="styles.css?v=puck-button-1">
+  <script type="module" src="bootstrap.js?v=puck-button-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
@@ -21,7 +21,7 @@
     <div class="intro"><h1 id="start-title" tabindex="-1">Know your hockey?</h1><p>Choose a decade and team, then guess the player.</p></div>
     <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">SCOREBOARD</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
     <div class="home-controls">
-    <button id="play" class="play-button" disabled><span>PLAY</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg></button>
+    <button id="play" class="play-button" disabled><span>PLAY</span><img src="puck-button.svg" alt="" draggable="false"></button>
     <div class="filters"><div class="filter"><label for="decade">Decade</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL team</label><select id="team" aria-describedby="roster-count" disabled><option>All teams</option></select><p id="roster-count" class="pool-count"></p></div></div>
 
     <p id="load-status" role="status">Loading NHL records…</p>
@@ -38,7 +38,7 @@
   <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
     <div class="result-intro"><h1 id="result-title" tabindex="-1">Round complete</h1></div>
     <section id="reveal" class="reveal" aria-labelledby="result-name"><p id="result-name" class="result-name"></p><dl id="reveal-details"></dl></section>
-    <div class="result-actions"><button id="next" class="play-button"><span>PLAY AGAIN</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg></button></div>
+    <div class="result-actions"><button id="next" class="play-button"><span>PLAY AGAIN</span><img src="puck-button.svg" alt="" draggable="false"></button></div>
   </section>
   <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
     <h1 id="menu-title" tabindex="-1">Menu</h1>

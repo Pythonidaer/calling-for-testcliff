@@ -32,3 +32,5 @@ See [team colors](docs/team-colors.md) for the 60 implemented accents, optional 
 
 ## Perfect-game confetti
 Winning with zero incorrect guesses triggers one Realistic Look confetti burst on the GOAL screen. Wins with any misses, losses, and giving up do not trigger it. The effect respects reduced-motion preferences and clears when navigating away or hiding the app. Returning to a result does not replay it. Vendored canvas-confetti 1.9.4 is bundled for offline use, with its ISC license in `vendor/canvas-confetti/`. Audio remains on hold.
+
+The PLAY and PLAY AGAIN controls use a local SVG puck illustration with a CSS-positioned label on its top face. The illustration is decorative inside a semantic button. Loading failures retain a readable text retry button.

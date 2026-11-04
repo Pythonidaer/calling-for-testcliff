@@ -1,13 +1,13 @@
 import confetti from './vendor/canvas-confetti/confetti.module.mjs';
 
-// Temporary manual preview, using canvas-confetti 1.9.4's Realistic Look demo.
-// https://catdad.github.io/canvas-confetti/ — no perfect-game trigger yet.
+// Perfect-game celebration using canvas-confetti 1.9.4's Realistic Look demo.
+// https://catdad.github.io/canvas-confetti/
 let canvas,burst;
-export function previewConfetti(){
+export function celebratePerfectGame(){
  stopConfetti();
  if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;
  if(!canvas){
-  canvas=document.createElement('canvas');canvas.id='confetti-preview';
+  canvas=document.createElement('canvas');canvas.id='confetti-celebration';
   canvas.setAttribute('aria-hidden','true');document.body.append(canvas);
   burst=confetti.create(canvas,{resize:true,disableForReducedMotion:true});
  }

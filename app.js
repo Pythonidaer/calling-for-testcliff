@@ -1,7 +1,7 @@
-import {previewConfetti,stopConfetti} from './confetti-preview.js?v=confetti-preview-1';
-import {teamAccents} from './team-accents.js?v=confetti-preview-1';
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=confetti-preview-1';
-import {createGame,guess,bodyParts} from './game.js?v=confetti-preview-1';
+import {celebratePerfectGame,stopConfetti} from './confetti-celebration.js?v=perfect-confetti-1';
+import {teamAccents} from './team-accents.js?v=perfect-confetti-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=perfect-confetti-1';
+import {createGame,guess,bodyParts} from './game.js?v=perfect-confetti-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -9,7 +9,7 @@ let preferences={decade:'all',team:'all'};
 try{const saved=JSON.parse(localStorage.getItem('ice-time-stats'));if(saved)for(const key of Object.keys(stats))if(Number.isSafeInteger(saved[key])&&saved[key]>=0)stats[key]=saved[key];}catch{}
 try{const saved=JSON.parse(localStorage.getItem('ice-time-options'));if(saved&&typeof saved.decade==='string'&&typeof saved.team==='string')preferences=saved;}catch{}
 function save(){try{localStorage.setItem('ice-time-stats',JSON.stringify(stats));}catch{}}
-function showScreen(value){if(value!=='game')stopConfetti();screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Exit to Home Screen');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value+'-title');heading.focus({preventScroll:true});}
+function showScreen(value){stopConfetti();screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Exit to Home Screen');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value+'-title');heading.focus({preventScroll:true});}
 function openMenu(){if(['menu','rules','rosters'].includes(screen)){showScreen(returnScreen);return;}returnScreen=screen;showScreen('menu');}
 function renderStats(){for(const key of Object.keys(stats))$(key).textContent=String(stats[key]).padStart(2,'0');}
 function pool(){return [...new Set(playerPool(dataset,$('decade').value,$('team').value).map(id=>dataset.players[id]))];}
@@ -27,14 +27,14 @@ function renderGame(){
  renderName();
  const parts=bodyParts(game);document.querySelectorAll('[data-part]').forEach(el=>el.classList.toggle('shown',Number(el.dataset.part)<=parts));$('drawing').setAttribute('aria-label',`Gallows with ${parts} of 6 body parts`);
  document.querySelectorAll('.key').forEach(el=>{const used=game.guessed.includes(el.textContent);el.disabled=used||game.status!=='playing';el.className='key'+(used?(game.name.includes(el.textContent)?' hit':' miss'):'');});
- if(game.status!=='playing'){settle();renderResult();showScreen('result');}
+ if(game.status!=='playing'){const perfect=!settled&&game.status==='won'&&game.misses===0;settle();renderResult();showScreen('result');if(perfect)celebratePerfectGame();}
 }
 function renderResult(){const won=game.status==='won';$('result-title').textContent=won?'GOAL':'Game Over';$('result-name').textContent=lastName;const decade=$('decade').value;$('reveal-details').replaceChildren();for(const detail of playerDetails(dataset,playerId,decade,$('team').value)){const row=document.createElement('div');const team=document.createElement('dt');const position=document.createElement('dd');team.textContent=detail.team;position.textContent=detail.positions.join(' / ');row.append(team,position);$('reveal-details').append(row);}}
 function chooseLetter(letter){if(screen!=='game'||!game)return;const previous=game;game=guess(game,letter);if(game!==previous)renderGame();}
 function exitHome(){game=undefined;showScreen('start');}
 function goBack(){if(['rules','rosters'].includes(screen)){showScreen('menu');return;}if(screen==='menu'){showScreen(returnScreen);return;}exitHome();}
 $('back').onclick=goBack;
-$('play').onclick=next;$('next').onclick=next;$('test-confetti').onclick=previewConfetti;
+$('play').onclick=next;$('next').onclick=next;
 $('skip').onclick=()=>{game={...game,status:'lost',misses:6+Number(game.bonus)};renderGame();};
 $('decade').onchange=()=>{teamOptions();updateOptions();};$('team').onchange=updateOptions;
 $('menu-toggle').onclick=openMenu;$('exit-home').onclick=exitHome;$('open-rules').onclick=()=>showScreen('rules');$('open-rosters').onclick=()=>showScreen('rosters');for(const button of document.querySelectorAll('.info-back'))button.onclick=()=>showScreen('menu');

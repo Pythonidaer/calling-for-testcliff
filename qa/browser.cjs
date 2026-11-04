@@ -43,13 +43,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   assert(await page.locator('.scoreboard').evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(188, 65, 44)'));
   assert(await page.locator('.filter select').first().evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(16, 43, 51)'));
   await page.getByRole('button',{name:'PLAY',exact:true}).click();
-  const roundBeforePreview=await page.locator('#round').innerText();
-  await page.emulateMedia({reducedMotion:'no-preference'});
-  await page.locator('#test-confetti').click();
-  await page.waitForFunction(()=>{const c=document.querySelector('#confetti-preview');return c&&c.width>0&&c.height>0&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((value,i)=>i%4===3&&value>0);});
-  assert.equal(await page.locator('#round').innerText(),roundBeforePreview);assert.equal(await page.locator('.key:enabled').count(),26);
-  await page.locator('#menu-toggle').click();assert.equal(await page.locator('#confetti-preview').count(),0);await page.locator('#menu-toggle').click();
-  await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#test-confetti').click();assert.equal(await page.locator('#confetti-preview').count(),0);
+  assert.equal(await page.locator('#test-confetti').count(),0);
   for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
    await page.setViewportSize({width,height});
    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Horizontal overflow '+width);assert(await page.locator('.rink-bottom').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=13));assert(await page.locator('#name').evaluate(el=>el.getBoundingClientRect().top-document.querySelector('.rink').getBoundingClientRect().bottom>=20&&document.querySelector('#keyboard').getBoundingClientRect().top-el.getBoundingClientRect().bottom>=20));

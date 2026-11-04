@@ -30,5 +30,5 @@ Start: choose a decade/team, see saved scores, then tap Play. Options are rememb
 ## Design references and follow-up work
 See [team colors](docs/team-colors.md) for the 60 implemented accents, optional second colors considered, current component usage, and future accessible scoreboard palette exploration. Open follow-up work is tracked in [TODO.md](TODO.md).
 
-## Temporary confetti preview
-During gameplay, Test confetti runs canvas-confetti's Realistic Look preset. It is a manual preview only, with no automatic win/perfect-game trigger or audio. The effect respects reduced-motion preferences and clears when leaving gameplay. Vendored canvas-confetti 1.9.4 is included for offline use with its ISC license in `vendor/canvas-confetti/`. Remove the temporary button when the final celebration is connected.
+## Perfect-game confetti
+Winning with zero incorrect guesses triggers one Realistic Look confetti burst on the GOAL screen. Wins with any misses, losses, and giving up do not trigger it. The effect respects reduced-motion preferences and clears when navigating away or hiding the app. Returning to a result does not replay it. Vendored canvas-confetti 1.9.4 is bundled for offline use, with its ISC license in `vendor/canvas-confetti/`. Audio remains on hold.

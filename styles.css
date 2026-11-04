@@ -19,3 +19,8 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
 #menu-screen{display:flex;flex-direction:column;flex:1}.menu-actions{display:flex;flex-direction:column;flex:1;gap:48px;margin-top:24px}.menu-actions #reset{margin-top:auto;margin-bottom:clamp(24px,5dvh,48px);text-align:center;color:var(--red);padding:12px;font-size:16px}
 
 .faceoff-circle{position:absolute;z-index:-1;width:26%;aspect-ratio:1;transform:scale(.72);border:2px solid #bc412c20;border-radius:50%;pointer-events:none}.faceoff-circle.top-left,.faceoff-circle.bottom-left{left:5%}.faceoff-circle.top-right,.faceoff-circle.bottom-right{right:5%}.faceoff-circle.top-left,.faceoff-circle.top-right{top:12%}.faceoff-circle.bottom-left,.faceoff-circle.bottom-right{bottom:12%}
+
+/* Mobile text roles: supporting labels 15px, body/actions/status 17px,
+   menu entries and information subheadings retain their existing 18px. */
+.scoreboard h2,.scoreboard dt,.pool-count{font-size:15px}
+.intro p,.info-screen p,.info-screen li,.rink-top,.rink-bottom,#skip,.menu-actions #reset{font-size:17px}

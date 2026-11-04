@@ -43,3 +43,6 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
 
 /* Filled navigation actions on menu and information screens. */
 #exit-home,.info-back{background:var(--ink);color:var(--paper)}
+
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+#menu-screen .menu-list{border-top:0}

@@ -7,7 +7,7 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=consistent-header-1">
+  <link rel="stylesheet" href="styles.css?v=compact-menu-1">
   <script type="module" src="bootstrap.js?v=consistent-header-1"></script>
 </head>
 <body data-screen="start">
@@ -39,7 +39,7 @@
     <div class="result-actions"><button id="next" class="play-button"><span>PLAY AGAIN</span><img src="puck-button.svg" alt="" draggable="false"></button></div>
   </section>
   <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
-    <h1 id="menu-title" tabindex="-1">Menu</h1>
+    <h1 id="menu-title" class="visually-hidden" tabindex="-1">Menu</h1>
     <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="open-rosters">Roster information <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></nav>
     <div class="menu-actions">
     <button id="exit-home" class="secondary">Exit to Home Screen</button>

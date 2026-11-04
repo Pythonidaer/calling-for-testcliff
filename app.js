@@ -1,7 +1,7 @@
-import {celebratePerfectGame,stopConfetti} from './confetti-celebration.js?v=puck-button-1';
-import {teamAccents} from './team-accents.js?v=puck-button-1';
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=puck-button-1';
-import {createGame,guess,bodyParts} from './game.js?v=puck-button-1';
+import {celebratePerfectGame,stopConfetti} from './confetti-celebration.js?v=home-layout-1';
+import {teamAccents} from './team-accents.js?v=home-layout-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=home-layout-1';
+import {createGame,guess,bodyParts} from './game.js?v=home-layout-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -9,7 +9,7 @@ let preferences={decade:'all',team:'all'};
 try{const saved=JSON.parse(localStorage.getItem('ice-time-stats'));if(saved)for(const key of Object.keys(stats))if(Number.isSafeInteger(saved[key])&&saved[key]>=0)stats[key]=saved[key];}catch{}
 try{const saved=JSON.parse(localStorage.getItem('ice-time-options'));if(saved&&typeof saved.decade==='string'&&typeof saved.team==='string')preferences=saved;}catch{}
 function save(){try{localStorage.setItem('ice-time-stats',JSON.stringify(stats));}catch{}}
-function showScreen(value){stopConfetti();screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Exit to Home Screen');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value+'-title');heading.focus({preventScroll:true});}
+function showScreen(value){stopConfetti();screen=value;document.body.dataset.screen=value;for(const name of ['start','game','result','menu','rules','rosters'])$(name+'-screen').hidden=name!==value;$('back').hidden=value==='start';$('back').setAttribute('aria-label',['rules','rosters'].includes(value)?'Back to menu':value==='menu'?'Close menu':'Exit to Home Screen');const inMenu=['menu','rules','rosters'].includes(value);$('menu-toggle').setAttribute('aria-expanded',String(inMenu));$('menu-toggle').setAttribute('aria-label',inMenu?'Close menu':'Open menu');window.scrollTo(0,0);const heading=$(value==='game'?'round':value==='start'?'scores-title':value+'-title');heading.focus({preventScroll:true});}
 function openMenu(){if(['menu','rules','rosters'].includes(screen)){showScreen(returnScreen);return;}returnScreen=screen;showScreen('menu');}
 function renderStats(){for(const key of Object.keys(stats))$(key).textContent=String(stats[key]).padStart(2,'0');}
 function pool(){return [...new Set(playerPool(dataset,$('decade').value,$('team').value).map(id=>dataset.players[id]))];}

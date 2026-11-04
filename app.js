@@ -1,5 +1,6 @@
-import {playerPool,availableTeams,playerDetails} from './pools.js?v=play-balance-1';
-import {createGame,guess,bodyParts} from './game.js?v=play-balance-1';
+import {teamAccents} from './team-accents.js?v=team-accents-1';
+import {playerPool,availableTeams,playerDetails} from './pools.js?v=team-accents-1';
+import {createGame,guess,bodyParts} from './game.js?v=team-accents-1';
 const $=id=>document.getElementById(id);
 let dataset,game,playerId,lastName='',bag=[],round=0,settled=false,screen='start',returnScreen='start';
 let stats={wins:0,streak:0,best:0};
@@ -12,7 +13,7 @@ function openMenu(){if(['menu','rules','rosters'].includes(screen)){showScreen(r
 function renderStats(){for(const key of Object.keys(stats))$(key).textContent=String(stats[key]).padStart(2,'0');}
 function pool(){return [...new Set(playerPool(dataset,$('decade').value,$('team').value).map(id=>dataset.players[id]))];}
 function saveOptions(){preferences={decade:$('decade').value,team:$('team').value};try{localStorage.setItem('ice-time-options',JSON.stringify(preferences));}catch{}}
-function updateOptions(){bag=[];saveOptions();$('roster-count').textContent=`${pool().length.toLocaleString()} players available`;$('data-note').textContent=$('decade').value==='current'?`Roster snapshot updated ${dataset.updated}.`:`Historical records updated ${dataset.updated}.`;}
+function updateOptions(){bag=[];saveOptions();const accent=teamAccents[$('team').value];if(accent)document.documentElement.style.setProperty('--team-accent',accent);else document.documentElement.style.removeProperty('--team-accent');$('roster-count').textContent=`${pool().length.toLocaleString()} players available`;$('data-note').textContent=$('decade').value==='current'?`Roster snapshot updated ${dataset.updated}.`:`Historical records updated ${dataset.updated}.`;}
 function teamOptions(){const previous=$('team').value;const ids=availableTeams(dataset,$('decade').value);$('team').replaceChildren(new Option('All teams','all'));for(const id of ids){const team=dataset.teams[id];const historic=!dataset.pools.current[id];$('team').add(new Option(team.name+(historic?' (historical)':''),id));}$('team').value=ids.includes(previous)?previous:'all';}
 function refill(){bag=[...pool()];for(let i=bag.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[bag[i],bag[j]]=[bag[j],bag[i]];}if(bag.at(-1)===lastName&&bag.length>1)[bag[0],bag[bag.length-1]]=[bag.at(-1),bag[0]];}
 function next(){if(!dataset)return;if(!bag.length)refill();lastName=bag.pop();playerId=playerPool(dataset,$('decade').value,$('team').value).find(id=>dataset.players[id]===lastName);game=createGame(lastName);round++;settled=false;renderGame();showScreen('game');}

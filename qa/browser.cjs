@@ -32,6 +32,16 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   assert(await page.locator('#play').evaluate(el=>el.querySelector('svg').getBoundingClientRect().width===44&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===14));
   await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
   await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().getAttribute('id'),'open-rules');assert(await page.locator('#reset').evaluate(el=>el.getBoundingClientRect().top-document.querySelector('.menu-list').getBoundingClientRect().bottom>=60));await page.getByRole('button',{name:'Back to start',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
+  // Team changes affect only the requested borders, and All teams restores the defaults.
+  const baseColors=await page.evaluate(()=>({board:getComputedStyle(document.querySelector('.scoreboard')).backgroundColor,text:getComputedStyle(document.querySelector('.scoreboard dt')).color,play:getComputedStyle(document.querySelector('#play')).backgroundColor}));
+  await page.locator('#team').selectOption('10');
+  assert(await page.evaluate(()=>['.scoreboard','.filter select','.rink'].every(selector=>getComputedStyle(document.querySelector(selector)).borderBottomColor==='rgb(0, 32, 91)')));
+  await page.locator('#team').selectOption('6');
+  assert(await page.locator('.scoreboard').evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(255, 184, 28)'));
+  assert.deepEqual(await page.evaluate(()=>({board:getComputedStyle(document.querySelector('.scoreboard')).backgroundColor,text:getComputedStyle(document.querySelector('.scoreboard dt')).color,play:getComputedStyle(document.querySelector('#play')).backgroundColor})),baseColors);
+  await page.locator('#team').selectOption('all');
+  assert(await page.locator('.scoreboard').evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(188, 65, 44)'));
+  assert(await page.locator('.filter select').first().evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(16, 43, 51)'));
   await page.getByRole('button',{name:'Play',exact:true}).click();
   for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
    await page.setViewportSize({width,height});

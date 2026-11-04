@@ -7,7 +7,7 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=mobile-type-1">
+  <link rel="stylesheet" href="styles.css?v=team-count-1">
   <script type="module" src="bootstrap.js?v=bonus-copy-1"></script>
 </head>
 <body data-screen="start">
@@ -22,8 +22,7 @@
     <section class="scoreboard" aria-labelledby="scores-title"><h2 id="scores-title">SCOREBOARD</h2><dl><div><dt>Wins</dt><dd id="wins">00</dd></div><div><dt>Streak</dt><dd id="streak">00</dd></div><div><dt>Best streak</dt><dd id="best">00</dd></div></dl></section>
     <div class="home-controls">
     <button id="play" class="play-button" disabled><span>PLAY</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 4 12 8-12 8Z"/></svg></button>
-    <div class="filters"><div class="filter"><label for="decade">Decade</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL team</label><select id="team" disabled><option>All teams</option></select></div></div>
-    <p id="roster-count" class="pool-count"></p>
+    <div class="filters"><div class="filter"><label for="decade">Decade</label><select id="decade" disabled><option>Loading NHL records…</option></select></div><div class="filter"><label for="team">NHL team</label><select id="team" aria-describedby="roster-count" disabled><option>All teams</option></select><p id="roster-count" class="pool-count"></p></div></div>
 
     <p id="load-status" role="status">Loading NHL records…</p>
     </div>

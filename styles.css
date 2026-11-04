@@ -22,5 +22,7 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
 
 /* Mobile text roles: supporting labels 15px, body/actions/status 17px,
    menu entries and information subheadings retain their existing 18px. */
-.scoreboard h2,.scoreboard dt,.pool-count{font-size:15px}
+.scoreboard h2,.scoreboard dt{font-size:15px}
 .intro p,.info-screen p,.info-screen li,.rink-top,.rink-bottom,#skip,.menu-actions #reset{font-size:17px}
+
+.filter .pool-count{margin-top:12px;font-size:17px;line-height:1.4}

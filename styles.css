@@ -31,4 +31,8 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
 
 .start-screen{padding-top:24px}
 
-#rules-screen{display:flex;flex-direction:column;flex:1}#rules-screen .info-back{margin-top:auto;margin-bottom:clamp(24px,5dvh,48px);flex-shrink:0}
+#rules-screen,#rosters-screen{display:flex;flex-direction:column;flex:1}
+#rules-screen .info-back,#rosters-screen .info-back{margin-top:auto;margin-bottom:clamp(24px,5dvh,48px);flex-shrink:0}
+/* Keep the menu exit aligned with the information-screen back buttons. */
+.menu-actions{position:relative;justify-content:flex-end;min-height:96px;margin-bottom:clamp(24px,5dvh,48px)}
+.menu-actions #reset{position:absolute;top:100%;left:0;width:100%;margin:16px 0 0;min-height:44px}

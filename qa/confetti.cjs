@@ -11,7 +11,7 @@ const fs=require('node:fs');
   const browser=await engine.launch();const page=await browser.newPage({viewport:{width:390,height:844}});
   await page.addInitScript(()=>{Math.random=()=>0;});await page.emulateMedia({reducedMotion:'no-preference'});
   await page.goto(process.env.QA_BASE_URL||'http://localhost:8000');await page.waitForFunction(()=>!document.querySelector('#decade').disabled);
-  const start=async()=>{await page.locator('#decade').selectOption('current');await page.locator('#team').selectOption('all');await page.locator('#team').selectOption(id);await page.locator('#play').click();};
+  const start=async()=>{await page.reload();await page.waitForFunction(()=>!document.querySelector('#decade').disabled);await page.locator('#decade').selectOption('current');await page.locator('#team').selectOption('all');await page.locator('#team').selectOption(id);await page.locator('#play').click();};
   const win=async()=>{for(const letter of letters)await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();assert.equal(await page.locator('#result-title').innerText(),'GOAL');};
   const home=async()=>{await page.locator('#back').click();};
   assert.equal(await page.locator('#test-confetti').count(),0);

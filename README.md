@@ -26,3 +26,6 @@ The iOS app uses Capacitor to bundle this same game and NHL snapshot locally. So
 
 ## Mobile screen flow
 Start: choose a decade/team, see saved scores, then tap Play. Options are remembered on this device. Game: only the round, rink, player name, alphabet buttons and give-up action. Result: reveal the player and their team/position, then Play again. The menu starts with How to play and includes Exit to Home Screen and Roster information. Exiting to Home clears an unfinished round without recording a loss. Opening the menu preserves the round. Compact phones use six keyboard columns instead of seven. The name and keyboard stay together on ordinary portrait screens; short screens and larger text may scroll rather than clip controls.
+
+## Design references and follow-up work
+See [team colors](docs/team-colors.md) for the 60 implemented accents, optional second colors considered, current component usage, and future accessible scoreboard palette exploration. Open follow-up work is tracked in [TODO.md](TODO.md).

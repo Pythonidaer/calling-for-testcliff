@@ -79,26 +79,13 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
  .game-screen{width:min(100%,1440px);align-self:center;min-height:500px}
  .rink svg{max-height:380px}
 }
-@media(min-width:1024px){
- .game-screen{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-rows:minmax(110px,1fr) auto minmax(60px,1fr);grid-template-areas:"rink name" "rink keyboard" "rink giveup";gap:28px 48px;padding:24px 0;min-height:520px}
- .rink{grid-area:rink;min-height:460px;border-radius:48px}
- .rink svg{max-height:500px}
- .rink-top,.rink-bottom{padding:20px 24px;font-size:18px}
- .guess-area{grid-area:name;align-self:end;padding:16px 0}
- .name{gap:16px}
- .letter{height:36px;font-size:28px;width:32px}
- .keyboard{grid-area:keyboard;gap:10px;align-self:center}
- .key{flex-basis:calc((100% - 60px)/7);height:60px;font-size:22px}
- #skip{grid-area:giveup;align-self:start;justify-self:center;font-size:18px}
-}
-
 /* One centered setup sequence: scoreboard, options, player count, then PLAY. */
 .home-controls{display:flex;flex-direction:column;justify-content:center;gap:24px;margin:0;padding:24px 0}
 .home-controls .filters{width:100%}
 .home-controls .pool-count{font-size:17px;line-height:1.4;margin: -12px 0 0;text-align:left}
 .home-controls>.play-button{margin:0 auto}
 @media(min-width:768px){
- .start-screen{width:min(100%,800px);display:flex;flex-direction:column;justify-content:center;gap:32px;padding:32px 0}
+ .start-screen{width:min(100%,640px);display:flex;flex-direction:column;justify-content:flex-start;gap:32px;padding:8px 0 32px}
  .scoreboard{width:min(100%,640px);padding:16px 20px 20px}
  .scoreboard h2{font-size:17px;margin-bottom:16px}
  .scoreboard dd{font-size:44px;padding:10px 0;margin-top:10px}
@@ -106,4 +93,9 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
  .home-controls .filters{grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:24px}
  .home-controls .pool-count{text-align:center;margin-top:-12px}
  .home-controls>.play-button{width:224px;height:160px;min-height:160px;font-size:19px}
+}
+
+@media(min-width:768px){
+ .game-screen{width:min(100%,640px)}
+ .key{height:52px;font-size:20px}
 }

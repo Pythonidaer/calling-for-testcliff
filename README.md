@@ -30,3 +30,7 @@ Use Node 22 or newer. Run `npm ci`, `npm test`, and `npm run build`. `npm start`
 ## Rollback
 
 The main branch before this web update is preserved as `backup/main-before-web-update-2026-11-05` at commit `6b4e814`. To undo the update, revert the web-update commit on main and push the revert. This preserves later history and lets Pages publish the previous interface. The backup branch also retains the exact earlier source and roster snapshot. The iOS work remains on `mobile/capacitor-ios-prep`.
+
+## Responsive layouts
+
+Phones keep the compact single-column screens and hamburger menu. At 768px and above, the header spans the viewport with visible navigation and the home screen uses two columns. At 1024px and above, the rink sits beside the player name and keyboard. Information screens retain a readable text width. Resizing preserves the active game and saved scores.

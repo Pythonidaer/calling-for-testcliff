@@ -1,6 +1,107 @@
-const {chromium}=require('playwright');
-(async()=>{const browser=await chromium.launch({headless:true});const page=await browser.newPage({viewport:{width:390,height:844}});const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://localhost:8000');await page.waitForFunction(()=>!document.getElementById('decade').disabled);await page.screenshot({path:'mobile-preview.png',fullPage:true});for(const width of [320,390,768,1280]){await page.setViewportSize({width,height:844});if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Overflow '+width);}
-await page.setViewportSize({width:320,height:844});await page.evaluate(()=>{const word=document.querySelector('.word');word.style.setProperty('--letter-count',18);word.replaceChildren(...Array.from('LAVALLEE-SMOTHERMAN',c=>{const el=document.createElement('span');el.className='letter';el.textContent=c;return el;}));});if(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth))throw Error('Long name overflow');await page.setViewportSize({width:390,height:844});await page.getByRole('button',{name:'How to play'}).click();await page.getByRole('button',{name:'Close rules'}).click();if(await page.locator('#reveal').isVisible())throw Error('Card visible before loss');await page.getByRole('button',{name:'Give up & reveal'}).click();if(!await page.locator('#reveal').isVisible()||!await page.locator('#reveal-details').innerText())throw Error('Missing loss card');if(await page.locator('[data-part].shown').count()!==6)throw Error('Expected six parts');if(!await page.locator('#message').innerText().then(t=>t.includes('Final whistle')))throw Error('No loss');await page.locator('#next').click();if(await page.locator('#reveal').isVisible())throw Error('Card not cleared for next round');await page.locator('#decade').selectOption('1980');await page.locator('#team').selectOption({label:'Quebec Nordiques (historical)'});if(!await page.locator('#roster-count').innerText().then(t=>parseInt(t)>10))throw Error('Empty historical filter');await page.getByRole('button',{name:'Give up & reveal'}).click();if(!await page.locator('#reveal-details').innerText().then(t=>t.includes('Quebec Nordiques')&&!t.includes('Colorado Avalanche')))throw Error('Wrong historical team on loss card');
-await page.evaluate(()=>{Math.random=()=>0});await page.locator('#decade').selectOption('current');await page.locator('#team').selectOption({label:'Boston Bruins'});
-const fs=require('node:fs');const data=JSON.parse(fs.readFileSync(require('node:path').join(__dirname,'../data/rosters.json'),'utf8'));const {playerPool}=await import('../pools.js');const {normalize}=await import('../game.js');const tid=Object.keys(data.teams).find(id=>data.teams[id].name==='Boston Bruins');const ids=playerPool(data,'current',tid);const player=data.players[ids[0]];
-for(const c of [...new Set(normalize(player).replace(/[^A-Z]/g,''))])await page.getByRole('button',{name:'Guess '+c,exact:true}).click();if(!await page.locator('#message').innerText().then(t=>t.startsWith('GOAL!')))throw Error('Win failed');if(!await page.locator('#reveal').isVisible())throw Error('Missing win card');const cardText=await page.locator('#reveal-details').innerText();if(!cardText.includes('Boston Bruins')||!/(Center|Left wing|Right wing|Defenseman|Goalie)/.test(cardText))throw Error('Missing team or position after win');await page.reload();await page.waitForFunction(()=>!document.getElementById('decade').disabled);if(await page.locator('#wins').innerText()!=='01')throw Error('Persistence failed');if(errors.length)throw Error(errors.join('\n'));console.log('Passed: four viewport sizes, rules modal, six-part loss, next round, historical decade/team and current roster filters, full win, saved scores, no JS errors');await browser.close();})();
+const {chromium,webkit}=require('playwright');
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const url=process.env.QA_BASE_URL||'http://localhost:8000';
+(async()=>{
+ const data=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/rosters.json'),'utf8'));
+ const {playerPool}=await import('../pools.js');
+ const {normalize}=await import('../game.js');
+ for(const engine of [chromium,webkit]){
+  const browser=await engine.launch({headless:true});
+  const page=await browser.newPage({viewport:{width:390,height:844}});
+  await page.emulateMedia({reducedMotion:'reduce'});
+  const errors=[];page.on('pageerror',error=>errors.push(error.message));
+  await page.goto(url);await page.waitForFunction(()=>!document.getElementById('decade').disabled);
+  assert(await page.locator('#start-screen').isVisible());assert(!(await page.locator('#game-screen').isVisible()));
+  assert.equal(await page.locator('#sound').count(),0);assert(await page.locator('.brand').evaluate(el=>Math.abs(el.querySelector('.brand-title').getBoundingClientRect().width-el.querySelector('small').getBoundingClientRect().width)<1));assert(await page.locator('#play').evaluate(el=>{const r=el.getBoundingClientRect(),label=el.querySelector('span').getBoundingClientRect();return el.querySelector('img').complete&&el.querySelector('img').naturalWidth>0&&label.top>=r.top&&label.bottom<r.top+r.height*.65;}));
+  // Check the rendered colors of the small labels and scoreboard, not screenshot pixels.
+  const contrasts=await page.evaluate(()=>{
+   const rgb=c=>c.match(/[\d.]+/g).slice(0,3).map(Number);
+   const luminance=c=>rgb(c).map(v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i],0);
+   return ['.brand small','#roster-count','.scoreboard dt','.scoreboard dd'].map(selector=>{const el=document.querySelector(selector);let bg=el;while(getComputedStyle(bg).backgroundColor==='rgba(0, 0, 0, 0)')bg=bg.parentElement;const a=luminance(getComputedStyle(el).color),b=luminance(getComputedStyle(bg).backgroundColor);return [selector,(Math.max(a,b)+.05)/(Math.min(a,b)+.05)];});
+  });
+  for(const [selector,ratio] of contrasts)assert(ratio>=4.5,selector+' contrast '+ratio);
+  console.log(engine.name()+': label contrast ratios',contrasts);
+  assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().width>=180&&el.getBoundingClientRect().height>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
+  for(const [width,height] of [[320,667],[390,844],[430,932]]){
+   await page.setViewportSize({width,height});
+   assert(await page.locator('#play').evaluate(el=>{const button=el.getBoundingClientRect(),board=document.querySelector('.scoreboard').getBoundingClientRect(),filters=document.querySelector('.filters').getBoundingClientRect();return Math.abs((button.top-board.bottom)-(filters.top-button.bottom))<1;}),'Unequal space around Play '+width+'x'+height);
+  }
+  await page.setViewportSize({width:390,height:844});
+  assert(await page.locator('#play').evaluate(el=>el.querySelector('img').getAttribute('alt')===''&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===17));
+  await page.screenshot({path:engine.name()+'-start-preview.png',fullPage:true});
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.setViewportSize({width:320,height:667});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Menu horizontal overflow');await page.setViewportSize({width:390,height:844});assert.equal(await page.locator('#menu-toggle').getAttribute('aria-expanded'),'true');assert.equal(await page.locator('.menu-list button').first().getAttribute('id'),'open-rules');assert.equal(await page.locator('.menu-list button').count(),2);assert.equal(await page.locator('#menu-screen').getByRole('button',{name:'Exit to Home Screen',exact:true}).count(),1);assert(await page.locator('#reset').evaluate(el=>{const r=el.getBoundingClientRect(),exit=document.querySelector('#exit-home').getBoundingClientRect();return r.top-exit.bottom>=16&&innerHeight-r.bottom>=8;}));await page.screenshot({path:engine.name()+'-menu-preview.png',fullPage:true});await page.getByRole('button',{name:'Exit to Home Screen',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
+  // Team changes affect only the requested borders, and All teams restores the defaults.
+  const baseColors=await page.evaluate(()=>({board:getComputedStyle(document.querySelector('.scoreboard')).backgroundColor,text:getComputedStyle(document.querySelector('.scoreboard dt')).color,play:getComputedStyle(document.querySelector('#play')).backgroundColor}));
+  await page.locator('#team').selectOption('10');
+  assert(await page.evaluate(()=>['.scoreboard','.filter select','.rink'].every(selector=>getComputedStyle(document.querySelector(selector)).borderBottomColor==='rgb(0, 32, 91)')));
+  await page.locator('#team').selectOption('6');
+  assert(await page.locator('.scoreboard').evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(255, 184, 28)'));
+  assert.deepEqual(await page.evaluate(()=>({board:getComputedStyle(document.querySelector('.scoreboard')).backgroundColor,text:getComputedStyle(document.querySelector('.scoreboard dt')).color,play:getComputedStyle(document.querySelector('#play')).backgroundColor})),baseColors);
+  await page.locator('#team').selectOption('all');
+  assert(await page.locator('.scoreboard').evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(188, 65, 44)'));
+  assert(await page.locator('.filter select').first().evaluate(el=>getComputedStyle(el).borderBottomColor==='rgb(16, 43, 51)'));
+  await page.getByRole('button',{name:'PLAY',exact:true}).click();
+  assert.equal(await page.locator('#test-confetti').count(),0);
+  for(const [width,height] of [[320,667],[375,812],[390,844],[430,932],[768,1024],[1280,900]]){
+   await page.setViewportSize({width,height});
+   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Horizontal overflow '+width);assert(await page.locator('.rink-bottom').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=13));assert(await page.locator('#name').evaluate(el=>el.getBoundingClientRect().top-document.querySelector('.rink').getBoundingClientRect().bottom>=20&&document.querySelector('#keyboard').getBoundingClientRect().top-el.getBoundingClientRect().bottom>=20));
+   assert(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+1),'Vertical overflow '+width+'x'+height);
+   assert(await page.locator('#keyboard').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight),'Keyboard below screen');
+   assert(await page.locator('.key').first().evaluate(el=>el.getBoundingClientRect().width>=44&&el.getBoundingClientRect().height>=44),'Small tap target');
+  }
+  await page.setViewportSize({width:390,height:844});
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'How to play',exact:true}).click();assert(await page.locator('#rules-screen').isVisible());await page.locator('#rules-screen').getByRole('button',{name:'Back to Menu',exact:true}).click();await page.getByRole('button',{name:'Roster information',exact:true}).click();assert(await page.locator('#rosters-screen').isVisible());await page.getByRole('button',{name:'Close menu',exact:true}).click();assert(await page.locator('#game-screen').isVisible());
+  await page.screenshot({path:engine.name()+'-game-preview.png',fullPage:true});
+  // Empty rounds can return to setup without changing scores.
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'Exit to Home Screen',exact:true}).click();
+  assert(await page.locator('#start-screen').isVisible());assert.equal(await page.locator('#wins').innerText(),'00');
+  await page.locator('#decade').selectOption('1980');await page.locator('#team').selectOption({label:'Quebec Nordiques (historical)'});
+  assert(parseInt(await page.locator('#roster-count').innerText().then(t=>t.replaceAll(',','')))>10);
+  await page.getByRole('button',{name:'PLAY',exact:true}).click();
+  await page.getByRole('button',{name:'Guess A',exact:true}).click();
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.locator('#menu-toggle').click();assert(await page.getByRole('button',{name:'Guess A',exact:true}).isDisabled());
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'Exit to Home Screen',exact:true}).click();assert(await page.locator('#start-screen').isVisible());assert.equal(await page.locator('#wins').innerText(),'00');assert.equal(await page.locator('#leave').count(),0);
+  await page.getByRole('button',{name:'PLAY',exact:true}).click();assert(await page.getByRole('button',{name:'Guess A',exact:true}).isEnabled(),'New round must clear previous guesses');await page.getByRole('button',{name:'Guess A',exact:true}).click();
+  await page.getByRole('button',{name:'Give up and reveal'}).click();assert(await page.locator('#result-screen').isVisible());
+  assert.equal(await page.locator('#result-title').innerText(),'Game Over');
+  assert.equal(await page.locator('#result-stats').count(),0);assert.equal(await page.locator('#result-screen #change-options').count(),0);assert(await page.locator('#next').evaluate(el=>el.querySelector('img').getAttribute('alt')===''&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===17));assert(await page.locator('.reveal dd').first().evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>=16));
+  assert.equal(await page.locator('#reveal-title').count(),0);assert.equal(await page.locator('#reveal-context').count(),0);assert(await page.locator('#result-screen').evaluate(el=>{const heading=el.querySelector('h1').getBoundingClientRect(),button=el.querySelector('#next').getBoundingClientRect(),r=el.getBoundingClientRect();return Math.abs((heading.top+button.bottom-r.top-r.bottom)/2)<5;}));
+  const loss=await page.locator('#reveal-details').innerText();assert(loss.includes('Quebec Nordiques')&&!loss.includes('Colorado Avalanche'));
+  await page.getByRole('button',{name:'PLAY AGAIN'}).click();assert(await page.locator('#game-screen').isVisible());assert(!(await page.locator('#result-screen').isVisible()));
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'Exit to Home Screen',exact:true}).click();
+  await page.evaluate(()=>{Math.random=()=>0});await page.locator('#decade').selectOption('current');await page.locator('#team').selectOption({label:'Boston Bruins'});
+  const teamId=Object.keys(data.teams).find(id=>data.teams[id].name==='Boston Bruins');const player=data.players[playerPool(data,'current',teamId)[0]];
+  await page.getByRole('button',{name:'PLAY',exact:true}).click();
+  const winningLetters=[...new Set(normalize(player).replace(/[^A-Z]/g,''))];
+  const beforeBonus=await page.locator('.rink').boundingBox();const keysBeforeBonus=await page.locator('#keyboard').boundingBox();
+  for(const letter of winningLetters.slice(0,3))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();
+  assert.equal(await page.locator('#bonus').innerText(),'Extra guess earned');assert.equal(await page.locator('#message').count(),0);
+  const afterBonus=await page.locator('.rink').boundingBox();const keysAfterBonus=await page.locator('#keyboard').boundingBox();
+  assert(Math.abs(beforeBonus.height-afterBonus.height)<1&&Math.abs(keysBeforeBonus.y-keysAfterBonus.y)<1,'Bonus shifts the layout');
+  for(const letter of winningLetters.slice(3))await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();
+  assert(await page.locator('#result-screen').isVisible());assert.equal(await page.locator('#result-title').innerText(),'GOAL');
+  const result=await page.locator('#reveal-details').innerText();assert(result.includes('Boston Bruins')&&/(Center|Left wing|Right wing|Defenseman|Goalie)/.test(result));
+  await page.screenshot({path:engine.name()+'-result-preview.png',fullPage:true});
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.locator('#menu-screen').getByRole('button',{name:'Exit to Home Screen',exact:true}).click();assert(await page.locator('#start-screen').isVisible());
+  await page.reload();await page.waitForFunction(()=>!document.getElementById('decade').disabled);
+  for(const id of ['wins','streak','best'])assert.equal(await page.locator('#'+id).innerText(),'01');
+  assert.equal(await page.locator('#decade').inputValue(),'current');assert.equal(await page.locator('#team').inputValue(),teamId);
+  // Exiting a started round from the menu leaves saved scores unchanged.
+  await page.getByRole('button',{name:'PLAY',exact:true}).click();await page.getByRole('button',{name:'Guess A',exact:true}).click();
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.locator('#menu-screen').getByRole('button',{name:'Exit to Home Screen',exact:true}).click();
+  await page.locator('#start-screen').waitFor({state:'visible'});
+  assert(await page.locator('#start-screen').isVisible());assert.equal(await page.locator('#wins').innerText(),'01');assert.equal(await page.locator('#streak').innerText(),'01');assert.equal(await page.locator('#best').innerText(),'01');
+  await page.getByRole('button',{name:'PLAY',exact:true}).click();
+  await page.setViewportSize({width:320,height:568});
+  await page.evaluate(()=>{const word=document.querySelector('.word');word.style.setProperty('--letter-count',18);word.replaceChildren(...Array.from('LAVALLEE-SMOTHERMAN',c=>{const el=document.createElement('span');el.className='letter';el.textContent=c;return el;}));});
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Long name overflow');
+  await page.locator('#skip').scrollIntoViewIfNeeded();assert(await page.locator('#skip').isVisible());
+  await page.getByRole('button',{name:'Give up and reveal',exact:true}).click();
+  await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.getByRole('button',{name:'Exit to Home Screen',exact:true}).click();
+  assert.equal(await page.locator('#wins').innerText(),'01');assert.equal(await page.locator('#streak').innerText(),'00');assert.equal(await page.locator('#best').innerText(),'01');
+  assert.deepEqual(errors,[]);console.log(engine.name()+': three screens, six screen sizes, visible keyboard, 44px targets, options, win/loss cards, persistence, penalty-free exit, small-screen fallback pass');
+  await browser.close();
+ }
+})().catch(error=>{console.error(error);process.exit(1);});

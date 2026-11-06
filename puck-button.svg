@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160">
+  <defs>
+    <radialGradient id="top" cx="42%" cy="36%" r="70%"><stop stop-color="#353b3d"/><stop offset=".65" stop-color="#171c1e"/><stop offset="1" stop-color="#080c0e"/></radialGradient>
+    <linearGradient id="side"><stop stop-color="#080c0e"/><stop offset=".48" stop-color="#303739"/><stop offset="1" stop-color="#070b0d"/></linearGradient>
+    <pattern id="rubber" width="8" height="7" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="none" stroke="#020506" stroke-width="1"/><circle cx="6" cy="5.5" r="1.4" fill="none" stroke="#020506" stroke-width="1"/></pattern>
+    <path id="wall" d="M10 50V82C10 104 55 122 110 122S210 104 210 82V50C210 72 165 90 110 90S10 72 10 50Z"/>
+  </defs>
+  <g transform="translate(10 10) rotate(-8 110 70)">
+    <use href="#wall" fill="url(#side)" stroke="#080c0e" stroke-width="2"/>
+    <use href="#wall" fill="url(#rubber)" opacity=".65"/>
+    <path d="M14 89C25 108 65 122 110 122S194 108 206 89" fill="none" stroke="#52595a" stroke-width="1.2"/>
+    <ellipse cx="110" cy="50" rx="100" ry="40" fill="url(#top)" stroke="#555e60" stroke-width="1.5"/>
+    <path d="M13 58C23 77 63 90 110 90S196 77 207 58" fill="none" stroke="#778082" stroke-width="1.2"/>
+  </g>
+</svg>

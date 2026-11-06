@@ -4,6 +4,7 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
 (async()=>{for(const engine of [chromium,webkit]){
  const browser=await engine.launch({headless:true});
  const page=await browser.newPage({viewport:{width:1440,height:900}});
+ await page.emulateMedia({reducedMotion:'reduce'});
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(url);await page.waitForFunction(()=>!document.getElementById('play').disabled);
  for(const width of [768,900,1024,1440,1920]){

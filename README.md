@@ -34,3 +34,5 @@ The main branch before this web update is preserved as `backup/main-before-web-u
 ## Responsive layouts
 
 Phones keep the compact single-column screens and hamburger menu. At 768px and above, the header spans the viewport with visible navigation and the home screen uses a centered stack with a compact scoreboard, side-by-side decade/team fields, player count, and puck. Phone fields remain stacked, with PLAY after the selections. The scoreboard sits just below the header, and the dropdowns match its total width. Gameplay keeps the rink above the player name and keyboard at every width. Information screens retain a readable text width. Resizing preserves the active game and saved scores.
+
+The logo returns home. Desktop navigation contains How to play and Roster information; phones retain the hamburger menu. The desktop home layout balances the space above the scoreboard with the space below PLAY, distributing the remaining space around the selections. Escape closes information/menu screens and returns to the previous game or home screen.

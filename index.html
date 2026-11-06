@@ -7,18 +7,16 @@
   <meta name="description" content="A retro hockey hangman game. Guess legends and modern greats, one letter at a time.">
   <title>Hat Trick Hangman</title>
   <link rel="icon" href="icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=stacked-game-1">
-  <script type="module" src="bootstrap.js?v=responsive-web-1"></script>
+  <link rel="stylesheet" href="styles.css?v=home-balance-1">
+  <script type="module" src="bootstrap.js?v=home-balance-1"></script>
 </head>
 <body data-screen="start">
 <main class="shell">
   <header>
-    <div class="brand"><svg class="logo" viewBox="4 5 40 28" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span class="brand-text"><span class="brand-title">HAT TRICK</span><small><span>H</span><span>A</span><span>N</span><span>G</span><span>M</span><span>A</span><span>N</span></small></span></div>
+    <a id="home-link" class="brand" href="./" aria-label="Hat Trick Hangman home" aria-current="page"><svg class="logo" viewBox="4 5 40 28" aria-hidden="true"><path d="M5 15v9c0 11 38 11 38 0v-9" fill="currentColor"/><ellipse cx="24" cy="15" rx="19" ry="9" fill="currentColor"/><path d="M9 16c8 6 22 6 30 0" fill="none" stroke="#f4f0e6" stroke-width="2"/></svg><span class="brand-text"><span class="brand-title">HAT TRICK</span><small><span>H</span><span>A</span><span>N</span><span>G</span><span>M</span><span>A</span><span>N</span></small></span></a>
     <nav class="desktop-nav" aria-label="Main navigation">
-      <button type="button" data-nav="start" aria-current="page">Home</button>
       <button type="button" data-nav="rules">How to play</button>
       <button type="button" data-nav="rosters">Roster information</button>
-      <button type="button" data-nav="menu" aria-expanded="false" aria-controls="menu-screen">Menu</button>
     </nav>
     <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   </header>

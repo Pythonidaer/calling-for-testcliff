@@ -11,7 +11,8 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   assert(await page.locator('.desktop-nav').isVisible());assert(!(await page.locator('#menu-toggle').isVisible()));
   assert(await page.locator('.shell').evaluate(el=>el.getBoundingClientRect().width>=innerWidth-1),'Desktop shell still phone width');
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Header or home overflows at '+width);
-  assert(await page.locator('.home-controls').evaluate(el=>el.getBoundingClientRect().left>document.querySelector('.scoreboard').getBoundingClientRect().right),'Desktop home needs two columns');
+  assert(await page.locator('.home-controls').evaluate(el=>{const r=el.getBoundingClientRect(),board=document.querySelector('.scoreboard').getBoundingClientRect(),filters=document.querySelector('.filters').getBoundingClientRect(),count=document.querySelector('#roster-count').getBoundingClientRect(),play=document.querySelector('#play').getBoundingClientRect();return r.width<=800&&r.top>=board.bottom&&count.top>=filters.bottom&&play.top>=count.bottom&&Math.abs((r.left+r.right-innerWidth)/2)<1;}),'Desktop setup must be centered and ordered');
+  assert(await page.locator('#team').evaluate(el=>el.getBoundingClientRect().left>document.querySelector('#decade').getBoundingClientRect().right),'Desktop fields should share a row');
  }
  await page.setViewportSize({width:1440,height:900});await page.screenshot({path:engine.name()+'-desktop-start-preview.png',fullPage:true});
  await page.locator('.desktop-nav [data-nav="rules"]').click();assert(await page.locator('#rules-screen').isVisible());

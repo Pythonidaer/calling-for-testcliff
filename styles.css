@@ -91,3 +91,19 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
  .key{flex-basis:calc((100% - 60px)/7);height:60px;font-size:22px}
  #skip{grid-area:giveup;align-self:start;justify-self:center;font-size:18px}
 }
+
+/* One centered setup sequence: scoreboard, options, player count, then PLAY. */
+.home-controls{display:flex;flex-direction:column;justify-content:center;gap:24px;margin:0;padding:24px 0}
+.home-controls .filters{width:100%}
+.home-controls .pool-count{font-size:17px;line-height:1.4;margin: -12px 0 0;text-align:left}
+.home-controls>.play-button{margin:0 auto}
+@media(min-width:768px){
+ .start-screen{width:min(100%,800px);display:flex;flex-direction:column;justify-content:center;gap:32px;padding:32px 0}
+ .scoreboard{width:min(100%,640px);padding:16px 20px 20px}
+ .scoreboard h2{font-size:17px;margin-bottom:16px}
+ .scoreboard dd{font-size:44px;padding:10px 0;margin-top:10px}
+ .home-controls{flex:none;gap:24px;padding:0}
+ .home-controls .filters{grid-template-columns:minmax(0,1fr) minmax(0,1.8fr);gap:24px}
+ .home-controls .pool-count{text-align:center;margin-top:-12px}
+ .home-controls>.play-button{width:224px;height:160px;min-height:160px;font-size:19px}
+}

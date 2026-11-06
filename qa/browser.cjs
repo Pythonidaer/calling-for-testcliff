@@ -23,10 +23,10 @@ const url=process.env.QA_BASE_URL||'http://localhost:8000';
   });
   for(const [selector,ratio] of contrasts)assert(ratio>=4.5,selector+' contrast '+ratio);
   console.log(engine.name()+': label contrast ratios',contrasts);
-  assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().width>=180&&el.getBoundingClientRect().height>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().bottom<=document.querySelector('.filters').getBoundingClientRect().top));
+  assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().width>=180&&el.getBoundingClientRect().height>=100));assert(await page.locator('#play').evaluate(el=>el.getBoundingClientRect().top>=document.querySelector('#roster-count').getBoundingClientRect().bottom));
   for(const [width,height] of [[320,667],[390,844],[430,932]]){
    await page.setViewportSize({width,height});
-   assert(await page.locator('#play').evaluate(el=>{const button=el.getBoundingClientRect(),board=document.querySelector('.scoreboard').getBoundingClientRect(),filters=document.querySelector('.filters').getBoundingClientRect();return Math.abs((button.top-board.bottom)-(filters.top-button.bottom))<1;}),'Unequal space around Play '+width+'x'+height);
+   assert(await page.locator('#play').evaluate(el=>{const button=el.getBoundingClientRect(),board=document.querySelector('.scoreboard').getBoundingClientRect(),filters=document.querySelector('.filters').getBoundingClientRect(),count=document.querySelector('#roster-count').getBoundingClientRect();return filters.top>=board.bottom&&count.top>=filters.bottom&&button.top>=count.bottom&&Math.abs((button.left+button.right-innerWidth)/2)<1;}),'Incorrect setup order '+width+'x'+height);
   }
   await page.setViewportSize({width:390,height:844});
   assert(await page.locator('#play').evaluate(el=>el.querySelector('img').getAttribute('alt')===''&&parseFloat(getComputedStyle(el.querySelector('span')).fontSize)===17));

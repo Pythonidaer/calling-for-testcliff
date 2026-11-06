@@ -13,7 +13,7 @@ const fs=require('node:fs');
   await page.goto(process.env.QA_BASE_URL||'http://localhost:8000');await page.waitForFunction(()=>!document.querySelector('#decade').disabled);
   const start=async()=>{await page.reload();await page.waitForFunction(()=>!document.querySelector('#decade').disabled);await page.locator('#decade').selectOption('current');await page.locator('#team').selectOption('all');await page.locator('#team').selectOption(id);await page.locator('#play').click();};
   const win=async()=>{for(const letter of letters)await page.getByRole('button',{name:'Guess '+letter,exact:true}).click();assert.equal(await page.locator('#result-title').innerText(),'GOAL');};
-  const home=async()=>{await page.locator('#back').click();};
+  const home=async()=>{await page.getByRole('button',{name:'Open menu',exact:true}).click();await page.locator('#exit-home').click();};
   assert.equal(await page.locator('#test-confetti').count(),0);
   await start();await win();
   await page.waitForFunction(()=>{const c=document.querySelector('#confetti-celebration');return c&&c.width>0&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);});

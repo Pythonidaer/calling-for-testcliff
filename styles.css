@@ -99,3 +99,17 @@ dialog{background:var(--paper);color:var(--ink);border:2px solid var(--ink);padd
  .game-screen{width:min(100%,640px)}
  .key{height:52px;font-size:20px}
 }
+
+.brand{color:var(--ink);text-decoration:none}
+a:focus-visible{outline:3px solid var(--red);outline-offset:5px}
+@media(min-width:768px){
+ /* 120px above the scoreboard = 24px shell + 64px header + 24px gap + 8px padding.
+    Reserve the same amount below PLAY, including the shell's 24px bottom padding. */
+ .start-screen{gap:0;padding-bottom:96px}
+ .home-controls{flex:1;display:grid;grid-template-rows:minmax(24px,1fr) auto auto minmax(24px,1fr) auto auto;gap:0}
+ .home-controls .filters{grid-row:2}
+ .home-controls .pool-count{grid-row:3;margin:12px 0 0}
+ .home-controls>.play-button{grid-row:5}
+ .home-controls #load-status{grid-row:6;margin-top:12px}
+ .home-controls #load-status:empty{margin:0}
+}

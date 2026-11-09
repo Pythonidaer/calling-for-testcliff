@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 (async()=>{
  const data=JSON.parse(fs.readFileSync('data/rosters.json','utf8'));
- const {playerPool}=await import('../pools.js');const {normalize}=await import('../game.js');
+ const {playerPool}=await import('../js/pools.js');const {normalize}=await import('../js/game.js');
  const id=Object.keys(data.teams).find(id=>data.teams[id].name==='Boston Bruins');
  const letters=[...new Set(normalize(data.players[playerPool(data,'current',id)[0]]).replace(/[^A-Z]/g,''))];
  const wrong=[...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].find(letter=>!letters.includes(letter));

@@ -5,8 +5,8 @@ const path=require('node:path');
 const url=process.env.QA_BASE_URL||'http://localhost:8000';
 (async()=>{
  const data=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/rosters.json'),'utf8'));
- const {playerPool}=await import('../pools.js');
- const {normalize}=await import('../game.js');
+ const {playerPool}=await import('../js/pools.js');
+ const {normalize}=await import('../js/game.js');
  for(const engine of [chromium,webkit]){
   const browser=await engine.launch({headless:true});
   const page=await browser.newPage({viewport:{width:390,height:844}});

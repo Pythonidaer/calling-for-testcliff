@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {createGame,guess,bodyParts} from '../game.js';
+import test from 'node:test';import assert from 'node:assert/strict';import {createGame,guess,bodyParts} from '../js/game.js';
 test('six misses draw all six parts and lose',()=>{let g=createGame('Bobby Orr');for(const c of 'ACEFGH')g=guess(g,c);assert.equal(g.status,'lost');assert.equal(bodyParts(g),6);});
 test('three correct letters award only one bonus and seventh miss loses',()=>{let g=createGame('Wayne Gretzky');for(const c of 'WAY')g=guess(g,c);assert.equal(g.bonus,true);for(const c of 'BCDFHI')g=guess(g,c);assert.equal(g.status,'playing');assert.equal(bodyParts(g),5);g=guess(g,'J');assert.equal(g.status,'lost');assert.equal(bodyParts(g),6);});
 test('repeat guesses and finished games do not change',()=>{let g=guess(createGame('Al MacInnis'),'A');assert.equal(guess(g,'A'),g);for(const c of 'LMCINS')g=guess(g,c);assert.equal(g.status,'won');assert.equal(guess(g,'Z'),g);});

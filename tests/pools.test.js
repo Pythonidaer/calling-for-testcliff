@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {playerPool,availableTeams,playerDetails} from '../pools.js';
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {playerPool,availableTeams,playerDetails} from '../js/pools.js';
 const data=JSON.parse(fs.readFileSync(new URL('../data/rosters.json',import.meta.url)));
 const tid=name=>Object.keys(data.teams).find(id=>data.teams[id].name===name);
 const names=(d,t)=>playerPool(data,d,t).map(id=>data.players[id]);

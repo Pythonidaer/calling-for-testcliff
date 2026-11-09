@@ -17,7 +17,7 @@ The existing brand theme, scoreboard surfaces, labels, numbers, play button, key
 
 Selecting **All teams** restores the existing defaults: scoreboard bottom border `#BC412C`, dropdown bottom borders and rink outline `#102B33`.
 
-The runtime source of truth is [team-accents.js](../team-accents.js), keyed by roster team ID. [app.js](../app.js) sets `--team-accent`, and [styles.css](../styles.css) applies it to the three component types above. Update this document when changing the mapping.
+The runtime source of truth is [team-accents.js](../js/team-accents.js), keyed by roster team ID. [app.js](../js/app.js) sets `--team-accent`, and [styles.css](../styles.css) applies it to the three component types above. Update this document when changing the mapping.
 
 ## Accent inventory
 

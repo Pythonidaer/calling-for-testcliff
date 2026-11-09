@@ -1,0 +1,25 @@
+---
+description: Apply when writing, reviewing, or refactoring code
+alwaysApply: false
+---
+<!-- Source: Pythonidaer/llm-instruction-toolkit, synced 2026-11-09 -->
+
+# Clean code
+
+- Understand the intended behavior, callers, and contracts before changing code.
+- Naming and design judgment live here. Syntax and module conventions live in ts-js-style.mdc. Apply an overlapping point once.
+- Apply a rule only to a concrete problem. Do not invent findings or edit code to satisfy a checklist.
+- Give each function one coherent purpose. Do not split code only to make it shorter.
+- Remove duplication only when both copies express the same rule. Do not merge similar syntax that encodes different policies.
+- Add an abstraction only when it names a real concept callers use.
+- Name the meaning, role, and units. Use one term for one concept and a different term for a different concept.
+- Avoid a name that implies the wrong behavior or representation. Drop noise words and type encodings that add no distinction.
+- Use nouns for things, verbs for actions, and questions for booleans. Use domain words for domain concepts and ordinary technical terms for mechanisms.
+- Keep a short name only in a tiny local scope. Make a widely used name something a reader can say and search for.
+- When renaming, update the references. Treat a public or stored name as a compatibility decision.
+- Keep the steps in a function at one level of detail. Extract a helper only when its name adds a concept the caller did not already state.
+- Make inputs, effects, and required order visible. Do not hide a dependency in global state just to remove a parameter.
+- Split a flag that selects different operations when separate names make the call clearer. An existing boolean is not automatically a defect.
+- Do not let a query change state as a surprise. Handle failure deliberately and keep the information a caller needs.
+- Treat length, parameter count, and return count as signals, not quotas.
+- Do not import Java class, factory, exception, or single-exit patterns into this JavaScript.

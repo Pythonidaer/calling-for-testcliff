@@ -1,0 +1,23 @@
+---
+description: Apply when editing JavaScript source
+globs: "**/*.js, **/*.mjs"
+alwaysApply: false
+---
+<!-- Source: Pythonidaer/llm-instruction-toolkit, synced 2026-11-09 -->
+
+# TS/JS style
+
+- New and rewritten code uses one statement per line, one binding per declaration (`const`, or `let` when reassigned), and `function` declarations for named functions. Do not imitate the existing compact layout. Leave code outside the edit unchanged.
+- Use named exports, and export only what other modules use. Do not use `export let` or a class as a namespace.
+- Prefer named imports. Use a namespace import for many symbols from a large API. Import files in this project with relative paths.
+- Use an arrow as a callback, and forward arguments explicitly when the signatures differ. Use a block body when its result is unused. Keep default-parameter expressions free of side effects.
+- Use braces for multi-line `if`, `for`, and `while`. A one-line `if` may omit them.
+- Use `===` and `!==`. Use `== null` only to treat `null` and `undefined` alike. Compare explicitly when `0`, `''`, or `NaN` matter.
+- Iterate arrays with `for...of` or an array method. Iterate plain objects with `Object.keys`, `Object.values`, or `Object.entries`.
+- Use array and object literals. Do not add non-index properties to an array. Put object-spread overrides after the spread.
+- Use single quotes, template literals for interpolation, and semicolons.
+- Throw `new Error` or a subclass. Limit `try` to the call that can fail, and comment an intentionally empty `catch`.
+- Use lowerCamelCase for functions and variables. Use CONSTANT_CASE only for a module-level value callers must not mutate.
+- The existing `$` helper may be used where it is already in scope. Do not create new single-character helpers.
+- Comment a constraint, fallback, or non-obvious contract. Do not narrate the next line. Add JSDoc to an export only when the name is not enough.
+- Remove a listener with the same function reference that added it. Do not register a listener with `bind`.

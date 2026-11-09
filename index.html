@@ -17,6 +17,7 @@
     <nav class="desktop-nav" aria-label="Main navigation">
       <button type="button" data-nav="rules">How to play</button>
       <button type="button" data-nav="rosters">Roster information</button>
+      <button type="button" data-nav="start">Change team</button>
     </nav>
     <button id="menu-toggle" class="icon-button" aria-label="Open menu" aria-expanded="false" aria-controls="menu-screen"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
   </header>
@@ -41,13 +42,13 @@
   <section id="result-screen" class="screen result-screen" aria-labelledby="result-title" hidden>
     <div class="result-intro"><h1 id="result-title" tabindex="-1">Round complete</h1></div>
     <section id="reveal" class="reveal" aria-labelledby="result-name"><p id="result-name" class="result-name"></p><dl id="reveal-details"></dl></section>
-    <div class="result-actions"><button id="next" class="play-button"><span>PLAY AGAIN</span><img src="puck-button.svg" alt="" draggable="false"></button></div>
+    <div class="result-actions"><button id="next" class="play-button"><span>PLAY AGAIN</span><img src="puck-button.svg" alt="" draggable="false"></button><button id="change-team-result" class="text-button">Change team</button></div>
   </section>
   <section id="menu-screen" class="screen info-screen" aria-labelledby="menu-title" hidden>
     <h1 id="menu-title" class="visually-hidden" tabindex="-1">Menu</h1>
     <nav class="menu-list" aria-label="Game information"><button id="open-rules">How to play <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><button id="open-rosters">Roster information <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button></nav>
     <div class="menu-actions">
-    <button id="exit-home" class="secondary">Exit to Home Screen</button>
+    <button id="exit-home" class="secondary">Change team</button>
     <button id="reset" class="text-button">Reset saved scores</button>
     </div>
   </section>
@@ -55,7 +56,8 @@
     <h1 id="rules-title" tabindex="-1">How to play</h1>
     <p>Know your hockey? Choose a decade and team, then guess the full name of an NHL player.</p>
     <ol><li>Choose a decade and team, then press PLAY.</li><li>Select letters to reveal the name. Each wrong letter adds a part to the hangman.</li><li>You have six misses. Three correct letters in a row earn one extra miss, once per round.</li></ol>
-    <p>Choosing Give up and reveal counts as a loss.</p>
+    <p>Choosing “Give up and reveal” counts as a loss.</p>
+    <p>Choosing “Change team” brings you back to the home screen to select a new decade and hockey team.</p>
     <button class="secondary info-back">Back to Menu</button>
   </section>
   <section id="rosters-screen" class="screen info-screen" aria-labelledby="rosters-title" hidden>
